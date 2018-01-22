@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/viewportWidthDialogTitle" />
+
+    <EditText
+        android:id="@+id/viewportWidthSeekBarValue"
+        android:textColor="@color/secondaryTextColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number" />
+
+    <SeekBar
+        android:id="@+id/viewportWidthSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:min="@integer/viewportWidthSeekBarMin"
+        android:max="@integer/viewportWidthSeekBarRange" />
+
+</LinearLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainToolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:titleTextColor="@android:color/white"
+        android:background="@color/primaryColor"
+        android:theme="@style/ToolbarTheme"
+        android:popupTheme="@style/ToolbarPopupTheme" >
+    </android.support.v7.widget.Toolbar>
+    
+    <Button
+        android:id="@+id/mainButtonPractice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mainButtonPractice" />
+    <Button
+        android:id="@+id/mainButtonList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mainButtonList" />
+    <Button
+        android:id="@+id/mainButtonFind"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mainButtonFind" />
+</LinearLayout>
+

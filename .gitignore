@@ -1,0 +1,5 @@
+build/*
+local.properties
+*.swp
+.gradle/*
+app/build/*

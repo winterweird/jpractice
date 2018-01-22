@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/findActionOpenCreateNewListDialog"
+        android:title="@string/listsActionCreateNewList"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/findActionOpenCreateEntryDialog"
+        android:title="@string/findActionOpenCreateEntryDialog"
+        android:showAsAction="never"/>
+    <item
+        android:id="@+id/findActionOpenWidthDialog"
+        android:title="@string/findActionOpenWidthDialog"
+        android:showAsAction="never"/>
+</menu>
+

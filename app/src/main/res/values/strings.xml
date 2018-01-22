@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JPractice</string>
+    
+    <string name="practiceOverviewActivity">Practice words</string>
+    <string name="namedListsActivity">View word lists</string>
+    <string name="findWordsActivity">Find words</string>
+    
+    <string name="mainButtonPractice">Practice words</string>
+    <string name="mainButtonList">Word lists</string>
+    <string name="mainButtonFind">Find words</string>
+    
+    <string name="practiceButtonMultiple">Multiple choice</string>
+    <string name="practiceButtonType">Type pronunciation</string>
+    <string name="practiceButtonPresets">Saved presets</string>
+    <string name="practiceButtonSettings">Settings</string>
+
+    <string name="findActionOpenWidthDialog">Adjust webview viewport width</string>
+    <string name="findActionOpenCreateEntryDialog">Add database entry</string>
+
+    <string name="listsActionCreateNewList">Create new list</string>
+
+    <string name="viewListActionDeleteList">Delete list</string>
+
+    <string name="viewportWidthDialogTitle">Select viewport width</string>
+    <string name="viewportWidthDialogOK">OK</string>
+
+    <string name="preferencesViewportWidth">preferencesViewportWidth</string>
+
+    <string name="createListListNameHint">List name</string>
+    <string name="createListMessage">Create new list</string>
+    <string name="createListOK">OK</string>
+    <string name="createListCancel">Cancel</string>
+
+    <string name="createEntryTitle">Add word to list</string>
+    <string name="createEntryMessage">There shouldn't be a message for this dialog</string>
+    <string name="createEntryOK">Add entry</string>
+    <string name="createEntryCancel">Cancel</string>
+    <string name="createEntryKanjiNameHint">Word (containing kanji)</string>
+    <string name="createEntryReadingNameHint">Word reading (hiragana)</string>
+    <string name="createEntrySpinnerLabel">Select list:</string>
+    <string name="createEntryOnOKEmptyKanjiMessage">Word (kanji) field cannot be empty</string>
+    <string name="createEntryOnOKEmptyReadingMessage">Word (reading) field cannot be empty</string>
+    <string name="createEntryOnOKNotValidKanjiMessage">Word (kanji) must contain only japanese characters, and at least one kanji</string>
+    <string name="createEntryOnOKNotValidReadingMessage">Word (reading) must contain only kana characters</string>
+
+    <string name="intentJishoSearchWord">INTENT_JISHO_SEARCH_WORD</string>
+    <string name="intentViewListListName">INTENT_VIEW_LIST_LIST_NAME</string>
+</resources>
