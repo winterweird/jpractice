@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
 
 import java.util.ArrayList;
 

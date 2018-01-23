@@ -1,10 +1,12 @@
-package com.github.winterweird.jpractice;
+package com.github.winterweird.jpractice.dialogs;
 
 import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.os.Bundle;
+
+import com.github.winterweird.jpractice.R;
 
 public class ConfirmationDialog extends DialogFragment {
     String title;

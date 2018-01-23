@@ -1,4 +1,4 @@
-package com.github.winterweird.jpractice;
+package com.github.winterweird.jpractice.dialogs;
 
 // stuff I need for all dialogs
 import android.support.v4.app.DialogFragment;  // base class
@@ -27,6 +27,7 @@ import android.content.ContentValues;          // for any db operation
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
+import com.github.winterweird.jpractice.R;
 
 public class CreateDatabaseEntryDialog extends DialogFragment {
 

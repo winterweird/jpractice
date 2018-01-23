@@ -1,4 +1,4 @@
-package com.github.winterweird.jpractice;
+package com.github.winterweird.jpractice.dialogs;
 
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.text.TextWatcher;
 import android.text.Editable;
+
+import com.github.winterweird.jpractice.R;
 
 public class ViewportWidthAdjustmentDialog extends DialogFragment {
     public interface ViewportWidthAdjustmentDialogListener {

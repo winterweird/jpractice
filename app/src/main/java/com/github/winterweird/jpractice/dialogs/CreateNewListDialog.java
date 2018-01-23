@@ -1,4 +1,4 @@
-package com.github.winterweird.jpractice;
+package com.github.winterweird.jpractice.dialogs;
 
 import android.support.v4.app.DialogFragment;
 import android.app.Activity;
@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.R;
 
 public class CreateNewListDialog extends DialogFragment {
     @Override

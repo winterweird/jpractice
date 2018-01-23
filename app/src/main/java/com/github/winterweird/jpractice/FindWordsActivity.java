@@ -30,6 +30,9 @@ import android.database.Cursor;
 // own classes
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.dialogs.ViewportWidthAdjustmentDialog;
+import com.github.winterweird.jpractice.dialogs.CreateDatabaseEntryDialog;
+import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
 
 // Java API
 import java.net.URLEncoder;

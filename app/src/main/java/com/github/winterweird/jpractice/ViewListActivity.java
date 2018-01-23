@@ -34,6 +34,7 @@ import android.util.Log;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.dialogs.ConfirmationDialog;
 
 public class ViewListActivity extends AppCompatActivity {
     private ListView listview;
