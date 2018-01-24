@@ -5,11 +5,14 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.widget.TextView;
-import android.widget.ListView;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.DividerItemDecoration;
 import android.widget.AdapterView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,12 +26,14 @@ import android.content.DialogInterface;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
+import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
 
 import java.util.ArrayList;
 
 public class NamedListsActivity extends AppCompatActivity {
-    private ListView listview;
-    private ListNameCursorAdapter adapter;
+    private RecyclerView recyclerView;
+    private NamedListsAdapter adapter;
+    private NamedListsAdapter.OnItemClickListener listener;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,17 +42,19 @@ public class NamedListsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
         setSupportActionBar(toolbar);
 
-        listview = (ListView)findViewById(R.id.listsListView);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView = (RecyclerView)findViewById(R.id.listsRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+                    DividerItemDecoration.VERTICAL));
+        listener = new NamedListsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView listnameView = view.findViewById(R.id.listItemListname);
-                String listname = listnameView.getText().toString();
+            public void onItemClick(NamedListsAdapter.ItemViewHolder holder, int position) {
+                String lnm = holder.listname.getText().toString();
                 Intent intent = new Intent(NamedListsActivity.this, ViewListActivity.class);
-                intent.putExtra(getResources().getString(R.string.intentViewListListName), listname);
+                intent.putExtra(getResources().getString(R.string.intentViewListListName), lnm);
                 startActivity(intent);
             }
-        });
+        };
     }
 
     @Override
@@ -111,30 +118,11 @@ public class NamedListsActivity extends AppCompatActivity {
                 null
         );
         if (adapter == null) {
-            adapter = new ListNameCursorAdapter(this, cursor, 0);
-            listview.setAdapter(adapter);
+            adapter = new NamedListsAdapter(this, cursor, listener);
+            recyclerView.setAdapter(adapter);
         }
         else {
             adapter.changeCursor(cursor);
-        }
-    }
-
-    private class ListNameCursorAdapter extends CursorAdapter {
-        public ListNameCursorAdapter(Context context, Cursor cursor, int flags) {
-            super(context, cursor, flags);
-        }
-        
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.lists_list_item, parent, false);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            TextView listname = view.findViewById(R.id.listItemListname);
-            String listnameStr = cursor.getString(cursor.getColumnIndexOrThrow(
-                        FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME));
-            listname.setText(listnameStr);
         }
     }
 }

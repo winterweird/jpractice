@@ -6,8 +6,8 @@
 
     <include layout="@layout/generic_toolbar" />
 
-    <ListView
-        android:id="@+id/listsListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

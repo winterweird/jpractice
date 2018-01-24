@@ -19,6 +19,9 @@ import android.content.DialogInterface;
 import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.DividerItemDecoration;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -35,9 +38,10 @@ import android.util.Log;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.dialogs.ConfirmationDialog;
+import com.github.winterweird.jpractice.adapters.ViewListAdapter;
 
 public class ViewListActivity extends AppCompatActivity {
-    private ListView listview;
+    private RecyclerView recyclerView;
     private String listName;
 
     @Override
@@ -48,7 +52,10 @@ public class ViewListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
         setSupportActionBar(toolbar);
 
-        listview = (ListView)findViewById(R.id.viewListListView);
+        recyclerView = (RecyclerView)findViewById(R.id.viewListRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+                    DividerItemDecoration.VERTICAL));
         listName = getIntent().getExtras().getString(
                 getResources().getString(R.string.intentViewListListName));
         setTitle(listName);
@@ -106,7 +113,7 @@ public class ViewListActivity extends AppCompatActivity {
                 null,
                 orderBy
         );
-        listview.setAdapter(new JapaneseWordCursorAdapter(this, cursor, 0));
+        recyclerView.setAdapter(new ViewListAdapter(this, cursor));
     }
 
     private class JapaneseWordCursorAdapter extends CursorAdapter {
