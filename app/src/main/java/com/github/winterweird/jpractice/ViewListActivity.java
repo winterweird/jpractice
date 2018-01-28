@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
@@ -39,9 +40,11 @@ import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.dialogs.ConfirmationDialog;
 import com.github.winterweird.jpractice.adapters.ViewListAdapter;
+import com.github.winterweird.jpractice.adapters.ViewListItemTouchHelperCallback;
 
 public class ViewListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private ViewListAdapter adapter;
     private String listName;
 
     @Override
@@ -56,6 +59,8 @@ public class ViewListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                     DividerItemDecoration.VERTICAL));
+        
+        
         listName = getIntent().getExtras().getString(
                 getResources().getString(R.string.intentViewListListName));
         setTitle(listName);
@@ -88,54 +93,16 @@ public class ViewListActivity extends AppCompatActivity {
 
     public void getListContent() {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-        SQLiteDatabase db = dbhelper.getReadableDatabase();
-
-        String[] projection = {
-            FeedReaderContract.FeedEntries._ID,
-            FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI,
-            FeedReaderContract.FeedEntries.COLUMN_NAME_READING
-        };
-
-        String selection = FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ?";
-
-        String[] selectionArgs = new String[] {
-            String.valueOf(dbhelper.idOf(FeedReaderContract.FeedLists.TABLE_NAME, listName))
-        };
-
-        String orderBy = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
-        
-        Cursor cursor = db.query(
-                FeedReaderContract.FeedEntries.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                orderBy
-        );
-        recyclerView.setAdapter(new ViewListAdapter(this, cursor));
-    }
-
-    private class JapaneseWordCursorAdapter extends CursorAdapter {
-        public JapaneseWordCursorAdapter(Context context, Cursor cursor, int flags) {
-            super(context, cursor, flags);
+        Cursor cursor = dbhelper.getEntries(listName);
+        if (adapter == null) {
+            adapter = new ViewListAdapter(this, cursor, listName, false);
+            recyclerView.setAdapter(adapter);
+            ItemTouchHelper.Callback callback = new ViewListItemTouchHelperCallback(adapter);
+            ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+            touchHelper.attachToRecyclerView(recyclerView);
         }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.view_list_list_item, parent, false);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            TextView kanji = view.findViewById(R.id.listItemKanji);
-            TextView reading = view.findViewById(R.id.listItemReading);
-            String kanjiStr = cursor.getString(cursor.getColumnIndexOrThrow(
-                        FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI));
-            String readingStr = cursor.getString(cursor.getColumnIndexOrThrow(
-                        FeedReaderContract.FeedEntries.COLUMN_NAME_READING));
-            kanji.setText(kanjiStr);
-            reading.setText(readingStr);
+        else {
+            adapter.changeCursor(cursor);
         }
     }
 

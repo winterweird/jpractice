@@ -4,9 +4,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
+import android.content.ContentValues;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import com.github.winterweird.jpractice.database.data.Entry;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 5;
@@ -88,7 +91,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " AS E INNER JOIN " + FeedReaderContract.FeedLists.TABLE_NAME + " AS L ON " +
                 "L." + FeedReaderContract.FeedLists._ID + " = " + "E." +
                 FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME +
-                whereClause.toString(), listnames);
+                whereClause.toString() + " ORDER BY E." +
+                FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, listnames);
+    }
+
+    public int swapEntries(Entry entry1, Entry entry2) {
+        SQLiteDatabase db = getWritableDatabase();
+        String tnm  = FeedReaderContract.FeedEntries.TABLE_NAME;
+        String cnm = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
+        int changed;
+
+        String[] whereNewPos = new String[]{String.valueOf(entry2.getPosition())};
+        String[] whereOldPos = new String[]{String.valueOf(entry1.getPosition())};
+        String[] whereNegOne = new String[]{String.valueOf(-1)};
+
+        ContentValues e1 = new ContentValues();
+        ContentValues e2 = new ContentValues();
+
+        e1.put(FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME, entry1.getListname());
+        e1.put(FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI, entry1.getKanji());
+        e1.put(FeedReaderContract.FeedEntries.COLUMN_NAME_READING, entry1.getReading());
+        e1.put(FeedReaderContract.FeedEntries.COLUMN_NAME_TIER, entry1.getTier());
+        e1.put(cnm, -1); // temporary relocation
+        
+        e2.put(FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME, entry2.getListname());
+        e2.put(FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI, entry2.getKanji());
+        e2.put(FeedReaderContract.FeedEntries.COLUMN_NAME_READING, entry2.getReading());
+        e2.put(FeedReaderContract.FeedEntries.COLUMN_NAME_TIER, entry2.getTier());
+        e2.put(cnm, entry1.getPosition());
+        
+        // make sure we can still uniquely identify the old position item
+        changed = db.update(tnm, e1, cnm + " = ?", whereOldPos);
+        if (changed != 1) {
+            return -1; // error
+        }
+
+        // update the new position item to be the old position
+        changed = db.update(tnm, e2, cnm + " = ?", whereNewPos);
+        if (changed != 1) {
+            e1.put(cnm, entry1.getPosition());
+            db.update(tnm, e1, cnm + " = ?", whereNegOne); // undo change
+            return -1; // error
+        }
+        
+        // update the old position item to be the new position
+        e1.put(cnm, entry2.getPosition());
+        changed = db.update(tnm, e1, cnm + " = ?", whereNegOne);
+        return changed;
     }
 
     public Cursor getPresets() {
