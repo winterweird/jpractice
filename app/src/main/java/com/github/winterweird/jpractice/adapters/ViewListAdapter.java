@@ -11,14 +11,18 @@ import android.widget.Toast;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import com.github.winterweird.jpractice.R;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
+import com.github.winterweird.jpractice.database.data.Entry;
 
 public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemViewHolder>
         implements ViewListItemTouchHelperCallback.ItemTouchHelperAdapter {
     private Context context;
-    private Cursor cursor;
+//    private Cursor cursor;
+    private ArrayList<Entry> entries;
     private String listName;
     private boolean filterOn;
     
@@ -33,30 +37,24 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         }
     }
 
-    public ViewListAdapter(Context context, Cursor cursor, String listName, boolean filterOn) {
+    public ViewListAdapter(Context context, ArrayList<Entry> entries,
+            String listName, boolean filterOn) {
         this.context = context;
-        this.cursor = cursor;
+        this.entries = entries;
         this.filterOn = filterOn;
         this.listName = listName;
     }
 
-    public void changeCursor(Cursor cursor) {
-        this.cursor = cursor;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
-        return this.cursor.getCount();
+        return this.entries.size();
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        cursor.moveToPosition(position);
-        String kanji = cursor.getString(cursor.getColumnIndexOrThrow(
-                    FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI));
-        String reading = cursor.getString(cursor.getColumnIndexOrThrow(
-                    FeedReaderContract.FeedEntries.COLUMN_NAME_READING));
+        Entry obj = entries.get(position);
+        String kanji = obj.getKanji();
+        String reading = obj.getReading();
         holder.kanji.setText(kanji);
         holder.reading.setText(reading);
         holder.root.setOnClickListener(new View.OnClickListener() {

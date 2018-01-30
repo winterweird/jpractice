@@ -109,9 +109,7 @@ public class FindWordsActivity extends AppCompatActivity
 
     public void showCreateEntryDialog() {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-        Cursor cursor = dbhelper.getLists();
-        int count = cursor.getCount();
-        cursor.close();
+        int count = dbhelper.getLists().size();
         
         if (count == 0) {
             Toast.makeText(this, "You haven't created any lists", Toast.LENGTH_LONG).show();

@@ -15,6 +15,7 @@ import android.app.Activity;                   // Store activity for later use
 import android.widget.Spinner;                 // Select one of the options
 import android.view.LayoutInflater;            // IDFK
 import android.widget.SimpleCursorAdapter;     // AAAAA
+import android.widget.ArrayAdapter;            // AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 import android.content.Context;
 
 // database stuff
@@ -26,8 +27,12 @@ import android.content.ContentValues;          // for any db operation
 // own classes
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
 import com.github.winterweird.jpractice.R;
+
+// java API
+import java.util.ArrayList;
 
 public class CreateDatabaseEntryDialog extends DialogFragment {
 
@@ -44,9 +49,12 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
         String[] from = new String[] {FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME};
         int   [] to   = new int[]    {R.id.createEntrySpinnerItem};
-        Cursor cursor = dbhelper.getLists();
-        spinner.setAdapter(new SimpleCursorAdapter(act, R.layout.create_new_entry_spinner_layout,
-                    cursor, from, to, 0));
+        ArrayList<List> lists = dbhelper.getLists();
+        ArrayAdapter<List> adapter = new ArrayAdapter<>(act,
+                R.layout.create_new_entry_spinner_layout, lists);
+        adapter.setDropDownViewResource(R.layout.create_new_entry_spinner_layout);
+        
+        spinner.setAdapter(adapter);
         
         final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
             .setView(view)

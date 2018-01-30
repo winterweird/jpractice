@@ -36,8 +36,11 @@ import android.widget.AdapterView;
 import android.os.Build;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.database.data.Entry;
 import com.github.winterweird.jpractice.dialogs.ConfirmationDialog;
 import com.github.winterweird.jpractice.adapters.ViewListAdapter;
 import com.github.winterweird.jpractice.adapters.ViewListItemTouchHelperCallback;
@@ -93,16 +96,16 @@ public class ViewListActivity extends AppCompatActivity {
 
     public void getListContent() {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-        Cursor cursor = dbhelper.getEntries(listName);
+        ArrayList<Entry> entries = dbhelper.getEntries(listName);
         if (adapter == null) {
-            adapter = new ViewListAdapter(this, cursor, listName, false);
+            adapter = new ViewListAdapter(this, entries, listName, false);
             recyclerView.setAdapter(adapter);
             ItemTouchHelper.Callback callback = new ViewListItemTouchHelperCallback(adapter);
             ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
             touchHelper.attachToRecyclerView(recyclerView);
         }
         else {
-            adapter.changeCursor(cursor);
+            // TODO
         }
     }
 

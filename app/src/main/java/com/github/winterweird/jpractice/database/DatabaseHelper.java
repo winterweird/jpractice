@@ -9,7 +9,7 @@ import android.content.ContentValues;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.github.winterweird.jpractice.database.data.Entry;
+import com.github.winterweird.jpractice.database.data.*;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 5;
@@ -61,23 +61,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getLists() {
+    public ArrayList<List> getLists() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedLists.TABLE_NAME,
+        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedLists.TABLE_NAME,
                 EMPTY_STRING_ARRAY);
+        
+        ArrayList<List> arr = new ArrayList<>();
+        String cnmListname = FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME;
+        
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String listname = cursor.getString(cursor.getColumnIndexOrThrow(cnmListname));
+            arr.add(new List(listname));
+        }
+        cursor.close();
+        return arr;
     }
 
-    public Cursor getEntries() {
+    public ArrayList<Entry> getEntries() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedEntries.TABLE_NAME,
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedEntries.TABLE_NAME,
                 EMPTY_STRING_ARRAY);
+
+        ArrayList<Entry> arr = new ArrayList<>();
+        String cnmListname = FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME;
+        String cnmKanji = FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI;
+        String cnmReading = FeedReaderContract.FeedEntries.COLUMN_NAME_READING;
+        String cnmTier = FeedReaderContract.FeedEntries.COLUMN_NAME_TIER;
+        String cnmPosition = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
+        
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int listname = cursor.getInt(cursor.getColumnIndexOrThrow(cnmListname));
+            String kanji = cursor.getString(cursor.getColumnIndexOrThrow(cnmKanji));
+            String reading = cursor.getString(cursor.getColumnIndexOrThrow(cnmReading));
+            int tier = cursor.getInt(cursor.getColumnIndexOrThrow(cnmTier));
+            int position = cursor.getInt(cursor.getColumnIndexOrThrow(cnmPosition));
+            arr.add(new Entry(listname, kanji, reading, position, tier));
+        }
+        cursor.close();
+        return arr;
     }
 
-    public Cursor getEntries(String listname) {
+    public ArrayList<Entry> getEntries(String listname) {
         return getEntries(new String[]{listname});
     }
 
-    public Cursor getEntries(String[] listnames) {
+    public ArrayList<Entry> getEntries(String[] listnames) {
         if (listnames == null || listnames.length == 0)
             throw new IllegalArgumentException("Argument must be a non-empty list of strings");
         SQLiteDatabase db = getReadableDatabase();
@@ -87,12 +116,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             whereClause.append(" OR L." + cnm + " = ?");
         }
 
-        return db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedEntries.TABLE_NAME +
+        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedEntries.TABLE_NAME +
                 " AS E INNER JOIN " + FeedReaderContract.FeedLists.TABLE_NAME + " AS L ON " +
                 "L." + FeedReaderContract.FeedLists._ID + " = " + "E." +
                 FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME +
                 whereClause.toString() + " ORDER BY E." +
                 FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, listnames);
+
+        ArrayList<Entry> arr = new ArrayList<>();
+        String cnmListname = FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME;
+        String cnmKanji = FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI;
+        String cnmReading = FeedReaderContract.FeedEntries.COLUMN_NAME_READING;
+        String cnmTier = FeedReaderContract.FeedEntries.COLUMN_NAME_TIER;
+        String cnmPosition = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
+        
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int listname = cursor.getInt(cursor.getColumnIndexOrThrow(cnmListname));
+            String kanji = cursor.getString(cursor.getColumnIndexOrThrow(cnmKanji));
+            String reading = cursor.getString(cursor.getColumnIndexOrThrow(cnmReading));
+            int tier = cursor.getInt(cursor.getColumnIndexOrThrow(cnmTier));
+            int position = cursor.getInt(cursor.getColumnIndexOrThrow(cnmPosition));
+            arr.add(new Entry(listname, kanji, reading, position, tier));
+        }
+        cursor.close();
+        return arr;
     }
 
     public int swapEntries(Entry entry1, Entry entry2) {
@@ -140,16 +187,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return changed;
     }
 
-    public Cursor getPresets() {
+    public ArrayList<Preset> getPresets() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedPresets.TABLE_NAME,
+        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedPresets.TABLE_NAME,
                 EMPTY_STRING_ARRAY);
+        
+        ArrayList<Preset> arr = new ArrayList<>();
+        String cnmListname = FeedReaderContract.FeedPresets.COLUMN_NAME_LISTNAME;
+        String cnmAlgorithm = FeedReaderContract.FeedPresets.COLUMN_NAME_ALGORITHM;
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int listname = cursor.getInt(cursor.getColumnIndexOrThrow(cnmListname));
+            String algorithm = cursor.getString(cursor.getColumnIndexOrThrow(cnmAlgorithm));
+            arr.add(new Preset(listname, algorithm));
+        }
+        cursor.close();
+        return arr;
     }
 
-    public Cursor getTags() {
+    public ArrayList<Tag> getTags() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedTags.TABLE_NAME,
+        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedTags.TABLE_NAME,
                 EMPTY_STRING_ARRAY);
+
+        ArrayList<Tag> arr = new ArrayList<>();
+        String cnmTag = FeedReaderContract.FeedTags.COLUMN_NAME_TAG;
+        
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String tag = cursor.getString(cursor.getColumnIndexOrThrow(cnmTag));
+            arr.add(new Tag(tag));
+        }
+        cursor.close();
+        return arr;
     }
 
     public Cursor getTaggedWords() {
@@ -221,9 +290,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int entryCount(String listname) {
-        Cursor cursor = getEntries(listname);
-        int count = cursor.getCount();
-        cursor.close();
+        ArrayList<Entry> entries = getEntries(listname);
+        int count = entries.size();
         return count;
     }
 
