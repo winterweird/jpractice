@@ -104,9 +104,6 @@ public class ViewListActivity extends AppCompatActivity {
             ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
             touchHelper.attachToRecyclerView(recyclerView);
         }
-        else {
-            // TODO
-        }
     }
 
     public void showDeleteConfirmationDialog() {

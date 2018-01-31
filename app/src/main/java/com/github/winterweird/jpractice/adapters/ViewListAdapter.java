@@ -21,7 +21,6 @@ import com.github.winterweird.jpractice.database.data.Entry;
 public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemViewHolder>
         implements ViewListItemTouchHelperCallback.ItemTouchHelperAdapter {
     private Context context;
-//    private Cursor cursor;
     private ArrayList<Entry> entries;
     private String listName;
     private boolean filterOn;
@@ -79,6 +78,9 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
                     Toast.LENGTH_LONG).show();
         }
         else {
+            Entry e1 = entries.get(fromPosition);
+            Entry e2 = entries.get(toPosition);
+            DatabaseHelper.getHelper(context).swapEntries(e1, e2);
             notifyItemMoved(fromPosition, toPosition);
         }
     }
