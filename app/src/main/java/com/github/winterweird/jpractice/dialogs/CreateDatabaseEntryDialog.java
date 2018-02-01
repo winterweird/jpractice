@@ -110,19 +110,18 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                     DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
                     SQLiteDatabase db = dbhelper.getWritableDatabase();
 
-                    Cursor c = (Cursor)spinner.getSelectedItem();
-                    String listName = c.getString(c.getColumnIndexOrThrow(
-                            FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME));
+                    List c = (List)spinner.getSelectedItem();
+                    String listName = c.getListname();
                     
                     int tid = dbhelper.idOf(FeedReaderContract.FeedLists.TABLE_NAME, listName);
                     int tier = 5; // TODO: put in integer resources
                     
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME, String.valueOf(tid));
+                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME, tid);
                     cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI, ktxt);
                     cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_READING, rtxt);
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_TIER, String.valueOf(tier));
+                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_TIER, tier);
                     cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, 
-                            String.valueOf(dbhelper.entryCount(listName)));
+                            dbhelper.entryCount(listName));
                     
                     try {
                         db.insertOrThrow(FeedReaderContract.FeedEntries.TABLE_NAME, null, cv);
