@@ -9,10 +9,12 @@ import android.content.ContentValues;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.util.Log;
+
 import com.github.winterweird.jpractice.database.data.*;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "kanji.db";
     private static DatabaseHelper helper;
     private static final String[] EMPTY_STRING_ARRAY = new String[]{};
@@ -136,6 +138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String reading = cursor.getString(cursor.getColumnIndexOrThrow(cnmReading));
             int tier = cursor.getInt(cursor.getColumnIndexOrThrow(cnmTier));
             int position = cursor.getInt(cursor.getColumnIndexOrThrow(cnmPosition));
+            Log.d("entryPos", "entry "  + kanji + " is #" + position);
             arr.add(new Entry(listname, kanji, reading, position, tier));
         }
         cursor.close();
