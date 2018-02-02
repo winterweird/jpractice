@@ -95,9 +95,9 @@ public class ViewListActivity extends AppCompatActivity {
     }
 
     public void getListContent() {
-        DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-        ArrayList<Entry> entries = dbhelper.getEntries(listName);
         if (adapter == null) {
+            DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
+            ArrayList<Entry> entries = dbhelper.getEntries(listName);
             adapter = new ViewListAdapter(this, entries, listName, false);
             recyclerView.setAdapter(adapter);
             ItemTouchHelper.Callback callback = new ViewListItemTouchHelperCallback(adapter);
