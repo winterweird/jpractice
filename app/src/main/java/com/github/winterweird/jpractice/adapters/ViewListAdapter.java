@@ -78,9 +78,9 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
                     Toast.LENGTH_LONG).show();
         }
         else {
-            Entry e1 = entries.get(fromPosition);
-            Entry e2 = entries.get(toPosition);
-            DatabaseHelper.getHelper(context).swapEntries(e1, e2);
+            Entry tmp = entries.get(fromPosition);
+            entries.set(fromPosition, entries.get(toPosition));
+            entries.set(toPosition, tmp);
             notifyItemMoved(fromPosition, toPosition);
         }
     }

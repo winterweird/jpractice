@@ -1,21 +1,30 @@
 package com.github.winterweird.jpractice.database;
 
-import android.provider.BaseColumns;
-
 public final class FeedReaderContract {
     private FeedReaderContract() {}
-    public static class FeedLists implements BaseColumns {
-        public static final String TABLE_NAME = "Lists";
+    public static class FeedLists extends AbstractFeedReaderContract {
         public static final String COLUMN_NAME_LISTNAME = "listname";
-        
+        public static final String TABLE_NAME = "Lists";
         public static final String CREATE =
-            "CREATE TABLE " + TABLE_NAME + "(" +
-            _ID + " INTEGER PRIMARY KEY," +
-            COLUMN_NAME_LISTNAME + " TEXT UNIQUE)";
-
+                "CREATE TABLE " + TABLE_NAME + "(" +
+                _ID + " INTEGER PRIMARY KEY," +
+                COLUMN_NAME_LISTNAME + " TEXT UNIQUE)";
         public static final String DELETE = "DROP TABLE " + TABLE_NAME;
+
+        @Override
+        public String getTableName() {
+            return TABLE_NAME;
+        }
+        @Override
+        public String getCreate() {
+            return CREATE;
+        }
+        @Override
+        public String getDelete() {
+            return DELETE;
+        }
     }
-    public static class FeedEntries implements BaseColumns {
+    public static class FeedEntries extends AbstractFeedReaderContract {
         public static final String TABLE_NAME           = "Entries";
         public static final String COLUMN_NAME_LISTNAME = "listname";
         public static final String COLUMN_NAME_KANJI    = "kanji";
@@ -34,6 +43,7 @@ public final class FeedReaderContract {
             "FOREIGN KEY(" + COLUMN_NAME_LISTNAME + ") "   +
              "REFERENCES " + FeedLists.TABLE_NAME + "("    + 
                              FeedLists._ID        + ") "   +
+                             "ON UPDATE CASCADE " +
                              "ON DELETE CASCADE," +
             "CONSTRAINT wordUniqueInList UNIQUE(" +
                              COLUMN_NAME_LISTNAME + ", "   +
@@ -43,9 +53,22 @@ public final class FeedReaderContract {
                              COLUMN_NAME_POSITION + "))";
         
         public static final String DELETE = "DROP TABLE " + TABLE_NAME;
+        
+        @Override
+        public String getTableName() {
+            return TABLE_NAME;
+        }
+        @Override
+        public String getCreate() {
+            return CREATE;
+        }
+        @Override
+        public String getDelete() {
+            return DELETE;
+        }
     }
 
-    public static class FeedPresets implements BaseColumns {
+    public static class FeedPresets extends AbstractFeedReaderContract {
         public static final String TABLE_NAME                        = "Presets";
         public static final String COLUMN_NAME_LISTNAME              = "listname";
         public static final String COLUMN_NAME_ALGORITHM             = "algorithm";
@@ -62,6 +85,7 @@ public final class FeedReaderContract {
             "FOREIGN KEY(" + COLUMN_NAME_LISTNAME   + ") "   +
              "REFERENCES " + FeedLists.TABLE_NAME   + "("    +
                              FeedLists._ID          + ") "   +
+                             "ON UPDATE CASCADE "   +
                              "ON DELETE CASCADE,"   +
             "CONSTRAINT checkValidAlg CHECK(algorithm IN ('" +
                 RANDOM_WORD_ALGORITHM     + "','"   +
@@ -70,9 +94,22 @@ public final class FeedReaderContract {
                 EVERY_WORD_CORRECT_ONCE_ALGORITHM   + "')))";
         
         public static final String DELETE = "DROP TABLE " + TABLE_NAME;
+        
+        @Override
+        public String getTableName() {
+            return TABLE_NAME;
+        }
+        @Override
+        public String getCreate() {
+            return CREATE;
+        }
+        @Override
+        public String getDelete() {
+            return DELETE;
+        }
     }
 
-    public static class FeedTags implements BaseColumns {
+    public static class FeedTags extends AbstractFeedReaderContract {
         public static final String TABLE_NAME      = "Tags";
         public static final String COLUMN_NAME_TAG = "tag";
 
@@ -82,9 +119,22 @@ public final class FeedReaderContract {
             COLUMN_NAME_TAG + " TEXT UNIQUE)";
         
         public static final String DELETE = "DROP TABLE " + TABLE_NAME;
+        
+        @Override
+        public String getTableName() {
+            return TABLE_NAME;
+        }
+        @Override
+        public String getCreate() {
+            return CREATE;
+        }
+        @Override
+        public String getDelete() {
+            return DELETE;
+        }
     }
 
-    public static class FeedTaggedWords implements BaseColumns {
+    public static class FeedTaggedWords extends AbstractFeedReaderContract {
         public static final String TABLE_NAME           = "TaggedWords";
         public static final String COLUMN_NAME_TAG      = "tag";
         public static final String COLUMN_NAME_KANJI_ID = "kanjiId";
@@ -97,15 +147,30 @@ public final class FeedReaderContract {
             "FOREIGN KEY(" + COLUMN_NAME_TAG            + ") REFERENCES " +
                           FeedTags.TABLE_NAME           + "("             +
                           FeedTags._ID                  + ") "            +
+                          "ON UPDATE CASCADE "          +
                           "ON DELETE CASCADE,"          +
             "FOREIGN KEY(" + COLUMN_NAME_KANJI_ID       + ") REFERENCES " +
                           FeedEntries.TABLE_NAME        + "("             +
                           FeedEntries._ID               + ") "            +
+                          "ON UPDATE CASCADE "          +
                           "ON DELETE CASCADE,"          +
             "CONSTRAINT tagKanjiCombinationUnique UNIQUE( "               +
                           COLUMN_NAME_TAG               + ", "            +
                           COLUMN_NAME_KANJI_ID          +"))";
         
         public static final String DELETE = "DROP TABLE " + TABLE_NAME;
+        
+        @Override
+        public String getTableName() {
+            return TABLE_NAME;
+        }
+        @Override
+        public String getCreate() {
+            return CREATE;
+        }
+        @Override
+        public String getDelete() {
+            return DELETE;
+        }
     }
 }
