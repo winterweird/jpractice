@@ -6,5 +6,5 @@
         android:id="@+id/listsActionCreateNewList"
         android:title="@string/listsActionCreateNewList"
         android:icon="@drawable/ic_add_circle_outline_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

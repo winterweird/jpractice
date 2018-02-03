@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
@@ -42,7 +43,7 @@ public class NamedListsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = (RecyclerView)findViewById(R.id.listsRecyclerView);
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                     DividerItemDecoration.VERTICAL));
@@ -55,6 +56,14 @@ public class NamedListsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         };
+
+        FloatingActionButton fab = findViewById(R.id.floatingActionButtonAdd);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCreateNewListDialog();
+            }
+        });
     }
 
     @Override

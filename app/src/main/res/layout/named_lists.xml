@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <include layout="@layout/generic_toolbar" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/listsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    <include layout="@layout/recyclerview" />
+    
+    <include layout="@layout/floating_action_add" />
+</android.support.design.widget.CoordinatorLayout>
 
 

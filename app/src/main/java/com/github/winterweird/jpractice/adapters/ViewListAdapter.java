@@ -89,5 +89,11 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     public void onItemDismiss(int position) {
         Toast.makeText(context, "Not yet implemented", Toast.LENGTH_LONG).show();
     }
+
+    public void insertItem(Entry e) {
+        int pos = getItemCount();
+        entries.add(e);
+        notifyItemInserted(pos);
+    }
 }
 

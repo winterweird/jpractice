@@ -25,4 +25,18 @@ public class List implements DatabaseEntryInterface {
     public String toString() {
         return listname;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof List)) return false;
+        List ol = (List)o;
+        return ol.listname.equals(this.listname);
+    }
+
+    @Override
+    public int hashCode() {
+        return listname.hashCode();
+    }
 }

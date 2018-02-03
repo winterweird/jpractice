@@ -28,6 +28,7 @@ import android.content.ContentValues;          // for any db operation
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.database.data.List;
+import com.github.winterweird.jpractice.database.data.Entry;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
 import com.github.winterweird.jpractice.R;
 
@@ -35,11 +36,13 @@ import com.github.winterweird.jpractice.R;
 import java.util.ArrayList;
 
 public class CreateDatabaseEntryDialog extends DialogFragment {
+    protected Entry result;
+    protected View view;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity act = getActivity();
-        View view = act.getLayoutInflater().inflate(R.layout.create_new_entry_dialog_layout, null);
+        view = act.getLayoutInflater().inflate(R.layout.create_new_entry_dialog_layout, null);
         
         // EditText entries in the thing
         final TextView kanji   = view.findViewById(R.id.createEntryKanji);
@@ -116,6 +119,7 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                     int tid = dbhelper.idOf(FeedReaderContract.FeedLists.TABLE_NAME, listName);
                     int tier = 5; // TODO: put in integer resources
                     
+                    result = new Entry(tid, ktxt, rtxt, dbhelper.entryCount(listName), tier);
                     cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME, tid);
                     cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI, ktxt);
                     cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_READING, rtxt);
