@@ -18,6 +18,9 @@ import android.widget.SimpleCursorAdapter;     // AAAAA
 import android.widget.ArrayAdapter;            // AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 import android.content.Context;
 
+// log
+import android.util.Log;
+
 // database stuff
 import android.database.SQLException;          // in case of problems
 import android.database.Cursor;                // for query results
@@ -115,6 +118,7 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                     String listName = c.getListname();
                     
                     int tid = dbhelper.idOf(FeedReaderContract.FeedLists.TABLE_NAME, listName);
+                    Log.d("TID", ""+tid);
                     int tier = 5; // TODO: put in integer resources
                     
                     result = new Entry(tid, ktxt, rtxt, dbhelper.entryCount(listName), tier);

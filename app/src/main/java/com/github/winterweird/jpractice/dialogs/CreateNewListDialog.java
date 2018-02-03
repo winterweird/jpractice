@@ -20,6 +20,8 @@ import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.R;
 
 public class CreateNewListDialog extends DialogFragment {
+    protected List result;
+    
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity act = getActivity();
@@ -39,6 +41,7 @@ public class CreateNewListDialog extends DialogFragment {
                         DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
                         try {
                             dbhelper.insert(l);
+                            result = l;
                         } catch (SQLException ex) {
                             Toast.makeText(getContext(), "Error: " + ex.getMessage(),
                                     Toast.LENGTH_LONG).show();

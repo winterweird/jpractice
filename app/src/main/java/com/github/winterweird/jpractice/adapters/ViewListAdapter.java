@@ -78,9 +78,12 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
                     Toast.LENGTH_LONG).show();
         }
         else {
-            Entry tmp = entries.get(fromPosition);
-            entries.set(fromPosition, entries.get(toPosition));
-            entries.set(toPosition, tmp);
+            Entry e1 = entries.get(fromPosition);
+            Entry e2 = entries.get(toPosition);
+            DatabaseHelper dbhelper = DatabaseHelper.getHelper(context);
+            dbhelper.swapEntries(e1, e2);
+            entries.set(fromPosition, e2.setPosition(fromPosition));
+            entries.set(toPosition, e1.setPosition(toPosition));
             notifyItemMoved(fromPosition, toPosition);
         }
     }
@@ -94,6 +97,10 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         int pos = getItemCount();
         entries.add(e);
         notifyItemInserted(pos);
+    }
+    public void setContent(ArrayList<Entry> entries) {
+        this.entries = entries;
+        notifyDataSetChanged();
     }
 }
 

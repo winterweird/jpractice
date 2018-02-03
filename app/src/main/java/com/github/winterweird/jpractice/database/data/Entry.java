@@ -56,4 +56,8 @@ public class Entry implements DatabaseEntryInterface {
         cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, position);
         return cv;
     }
+
+    public Entry setPosition(int newPosition) {
+        return new Entry(listname, kanji, reading, newPosition, tier);
+    }
 }

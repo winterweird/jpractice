@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
+import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
 import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
@@ -92,48 +93,33 @@ public class NamedListsActivity extends AppCompatActivity {
     }
 
     public void showCreateNewListDialog() {
-        DialogFragment dialog = new CreateNewListAndRefreshDialog(this);
+        DialogFragment dialog = new CreateNewListAndRefreshDialog(adapter);
         dialog.show(getSupportFragmentManager(), "CreateNewListDialog");
     }
 
     public static class CreateNewListAndRefreshDialog extends CreateNewListDialog {
-        private NamedListsActivity context;
-        public CreateNewListAndRefreshDialog(NamedListsActivity context) {
-            this.context = context;
+        private NamedListsAdapter adapter;
+        public CreateNewListAndRefreshDialog(NamedListsAdapter adapter) {
+            this.adapter = adapter;
         }
         
         @Override
         public void onDismiss(DialogInterface dialog) {
             super.onDismiss(dialog);
-            context.getListContent();
+            if (this.result != null) {
+                adapter.insertItem(this.result);
+            }
         }
     }
 
     public void getListContent() {
-        // TODO: update NamedListsAdapter to not take a cursor
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-        SQLiteDatabase db = DatabaseHelper.getHelper(this).getReadableDatabase();
-
-        String[] projection = {
-            FeedReaderContract.FeedLists._ID,
-            FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME
-        };
-        
-        Cursor cursor = db.query(
-                FeedReaderContract.FeedLists.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        ArrayList<List> lists = dbhelper.getLists();
         if (adapter == null) {
-            adapter = new NamedListsAdapter(this, cursor, listener);
+            adapter = new NamedListsAdapter(this, lists, listener);
             recyclerView.setAdapter(adapter);
-        }
-        else {
-            adapter.changeCursor(cursor);
+        } else {
+            adapter.setContent(lists);
         }
     }
 }

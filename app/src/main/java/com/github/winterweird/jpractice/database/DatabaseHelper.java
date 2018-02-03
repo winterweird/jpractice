@@ -72,7 +72,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String cnmListname = FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME;
         
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedLists._ID));
             String listname = cursor.getString(cursor.getColumnIndexOrThrow(cnmListname));
+            Log.d("TID", ""+id);
             arr.add(new List(listname));
         }
         cursor.close();
@@ -118,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             whereClause.append(" OR L." + cnm + " = ?");
         }
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedEntries.TABLE_NAME +
+        Cursor cursor = db.rawQuery("SELECT E.* FROM " + FeedReaderContract.FeedEntries.TABLE_NAME +
                 " AS E INNER JOIN " + FeedReaderContract.FeedLists.TABLE_NAME + " AS L ON " +
                 "L." + FeedReaderContract.FeedLists._ID + " = " + "E." +
                 FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME +
@@ -133,12 +135,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String cnmPosition = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
         
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            int listname = cursor.getInt(cursor.getColumnIndexOrThrow(cnmListname));
+            int listname = cursor.getInt(cursor.getColumnIndexOrThrow("E.listname"));
             String kanji = cursor.getString(cursor.getColumnIndexOrThrow(cnmKanji));
             String reading = cursor.getString(cursor.getColumnIndexOrThrow(cnmReading));
             int tier = cursor.getInt(cursor.getColumnIndexOrThrow(cnmTier));
             int position = cursor.getInt(cursor.getColumnIndexOrThrow(cnmPosition));
-            Log.d("entryPos", "entry "  + kanji + " is #" + position);
+            Log.d("entryPos", "entry:" + listname + " " + kanji + " is #" + position);
             arr.add(new Entry(listname, kanji, reading, position, tier));
         }
         cursor.close();
@@ -146,34 +148,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int swapEntries(Entry entry1, Entry entry2) {
+        if (!(entry1.getListname() == entry2.getListname())) {
+            throw new IllegalArgumentException("entry1.getListname() == entry2.getListname()");
+        }
+
         SQLiteDatabase db = getWritableDatabase();
         
         String tnm     = FeedReaderContract.FeedEntries.TABLE_NAME;
         String cnmPos  = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
         String cnmList = FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME;
         String cnmKan  = FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI;
+        int lnm = entry1.getListname();
+        int pos1 = entry1.getPosition();
+        int pos2 = entry2.getPosition();
 
         String fmtString = "UPDATE %s SET %s = %d WHERE %s = %d AND %s = '%s'";
-        Log.d("entryPos", "count is " +db.rawQuery("SELECT * FROM Entries WHERE listname=0 AND kanji='音読み'", null).getCount());
+
+        Log.d("kanj", entry1.getKanji());
+        Log.d("kanj", entry2.getKanji());
+        Log.d("pos", "pos1 = " + pos1);
+        Log.d("pos", "pos2 = " + pos2);
         
         db.execSQL(String.format(fmtString,
                     tnm,
                     cnmPos,  -1,
-                    cnmList, entry1.getListname(),
+                    cnmList, lnm,
                     cnmKan,  entry1.getKanji()));
-        
+
         db.execSQL(String.format(fmtString,
                     tnm,
                     cnmPos,  entry1.getPosition(),
-                    cnmList, entry2.getListname(),
+                    cnmList, lnm,
                     cnmKan,  entry2.getKanji()));
-        
+
         db.execSQL(String.format(fmtString,
                     tnm,
                     cnmPos,  entry2.getPosition(),
-                    cnmList, entry1.getListname(),
+                    cnmList, lnm,
                     cnmKan,  entry1.getKanji()));
 
+        getEntries("あ");
         return 1;
     }
 
