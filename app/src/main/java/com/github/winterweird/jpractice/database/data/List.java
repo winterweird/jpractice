@@ -20,4 +20,9 @@ public class List implements DatabaseEntryInterface {
         cv.put(FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME, listname);
         return cv;
     }
+
+    @Override
+    public String toString() {
+        return listname;
+    }
 }
