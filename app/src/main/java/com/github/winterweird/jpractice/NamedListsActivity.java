@@ -110,6 +110,8 @@ public class NamedListsActivity extends AppCompatActivity {
     }
 
     public void getListContent() {
+        // TODO: update NamedListsAdapter to not take a cursor
+        DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
         SQLiteDatabase db = DatabaseHelper.getHelper(this).getReadableDatabase();
 
         String[] projection = {

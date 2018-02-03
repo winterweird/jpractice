@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.R;
 
 public class CreateNewListDialog extends DialogFragment {
@@ -34,11 +35,10 @@ public class CreateNewListDialog extends DialogFragment {
                                 Toast.LENGTH_LONG).show();
                     }
                     else {
-                        ContentValues cv = new ContentValues();
-                        cv.put(FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME, s);
-                        SQLiteDatabase db = DatabaseHelper.getHelper(getContext()).getWritableDatabase();
+                        List l = new List(s);
+                        DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
                         try {
-                            db.insertOrThrow(FeedReaderContract.FeedLists.TABLE_NAME, null, cv);
+                            dbhelper.insert(l);
                         } catch (SQLException ex) {
                             Toast.makeText(getContext(), "Error: " + ex.getMessage(),
                                     Toast.LENGTH_LONG).show();

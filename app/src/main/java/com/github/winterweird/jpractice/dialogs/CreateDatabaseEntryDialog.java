@@ -109,9 +109,7 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                         .show();
                 }
                 else {
-                    ContentValues cv = new ContentValues();
                     DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
-                    SQLiteDatabase db = dbhelper.getWritableDatabase();
 
                     List c = (List)spinner.getSelectedItem();
                     String listName = c.getListname();
@@ -120,15 +118,9 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                     int tier = 5; // TODO: put in integer resources
                     
                     result = new Entry(tid, ktxt, rtxt, dbhelper.entryCount(listName), tier);
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME, tid);
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI, ktxt);
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_READING, rtxt);
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_TIER, tier);
-                    cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, 
-                            dbhelper.entryCount(listName));
                     
                     try {
-                        db.insertOrThrow(FeedReaderContract.FeedEntries.TABLE_NAME, null, cv);
+                        dbhelper.insert(result);
                         Toast.makeText(act, "Added entry to " + listName, Toast.LENGTH_LONG).show();
                     } catch (SQLException ex) {
                         Toast.makeText(act, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();

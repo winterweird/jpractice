@@ -154,6 +154,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String cnmKan  = FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI;
 
         String fmtString = "UPDATE %s SET %s = %d WHERE %s = %d AND %s = '%s'";
+        Log.d("entryPos", "count is " +db.rawQuery("SELECT * FROM Entries WHERE listname=0 AND kanji='音読み'", null).getCount());
+        
         db.execSQL(String.format(fmtString,
                     tnm,
                     cnmPos,  -1,
@@ -275,6 +277,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sb.append(postfix);
         }
         return sb.toString();
+    }
+
+    public void insert(List l) {
+        ContentValues cv = l.getContentValues();
+        SQLiteDatabase db = getWritableDatabase();
+        db.insertOrThrow(FeedReaderContract.FeedLists.TABLE_NAME, null, cv);
+    }
+    public void insert(Entry e) {
+        ContentValues cv = e.getContentValues();
+        SQLiteDatabase db = getWritableDatabase();
+        db.insertOrThrow(FeedReaderContract.FeedEntries.TABLE_NAME, null, cv);
+    }
+    public void insert(Preset p) {
+        ContentValues cv = p.getContentValues();
+        SQLiteDatabase db = getWritableDatabase();
+        db.insertOrThrow(FeedReaderContract.FeedPresets.TABLE_NAME, null, cv);
+    }
+    public void insert(Tag t) {
+        ContentValues cv = t.getContentValues();
+        SQLiteDatabase db = getWritableDatabase();
+        db.insertOrThrow(FeedReaderContract.FeedTags.TABLE_NAME, null, cv);
+    }
+    public void insert(TaggedWord tw) {
+        ContentValues cv = tw.getContentValues();
+        SQLiteDatabase db = getWritableDatabase();
+        db.insertOrThrow(FeedReaderContract.FeedTaggedWords.TABLE_NAME, null, cv);
     }
 
     public int entryCount(String listname) {
