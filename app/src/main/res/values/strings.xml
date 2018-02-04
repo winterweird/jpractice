@@ -22,6 +22,8 @@
 
     <string name="viewListActionDeleteList">Delete list</string>
 
+    <string name="viewItemButtonDeleteText">Delete</string>
+
     <string name="viewportWidthDialogTitle">Select viewport width</string>
     <string name="viewportWidthDialogOK">OK</string>
 
