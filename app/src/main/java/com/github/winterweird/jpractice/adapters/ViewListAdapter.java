@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.database.Cursor;
 import android.content.Context;
 import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.ImageButton;
 
 import android.util.Log;
 
@@ -17,6 +19,7 @@ import com.github.winterweird.jpractice.R;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.Entry;
+import com.github.winterweird.jpractice.layout.SwipeToRevealButtonItemLayout;
 
 public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemViewHolder>
         implements ViewListItemTouchHelperCallback.ItemTouchHelperAdapter {
@@ -66,9 +69,20 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.view_list_list_item,
-                parent, false);
-        return new ItemViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.view_list_list_item, parent, false);
+        SwipeToRevealButtonItemLayout bil = (SwipeToRevealButtonItemLayout)view;
+        LinearLayout buttonsLayout = bil.findViewById(R.id.buttonsLayout);
+        ImageButton b = (ImageButton)inflater.inflate(R.layout.delete_button, buttonsLayout, true)
+            .findViewById(R.id.buttonDelete); // THIS. FUCKING THIS.
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Test", "test");
+            }
+        });
+        bil.addButton(b);
+        return new ItemViewHolder(bil);
     }
 
     @Override
