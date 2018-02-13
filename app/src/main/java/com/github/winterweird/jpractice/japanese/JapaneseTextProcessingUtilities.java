@@ -1,11 +1,17 @@
 package com.github.winterweird.jpractice.japanese;
 
 public class JapaneseTextProcessingUtilities {
+    public static boolean isIdeographicIterationMark(char ch) {
+        return ch == '々';
+    }
+    public static boolean isIdeographicIterationMark(int ch) {
+        return ch == Character.codePointAt("々", 0); // tbh this is the easiest way for me to know this works
+    }
     public static boolean isKanji(char ch) {
         return Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS;
     }
     public static boolean isKanji(int ch) {
-        return Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS;
+        return Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || ch == Character.codePointAt("々", 0);
     }
     public static boolean isHiragana(char ch) {
         return Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.HIRAGANA;
@@ -26,10 +32,10 @@ public class JapaneseTextProcessingUtilities {
         return isHiragana(ch) || isKatakana(ch);
     }
     public static boolean isJapanese(char ch) {
-        return isKana(ch) || isKanji(ch);
+        return isKana(ch) || isKanji(ch) || isIdeographicIterationMark(ch);
     }
     public static boolean isJapanese(int ch) {
-        return isKana(ch) || isKanji(ch);
+        return isKana(ch) || isKanji(ch) || isIdeographicIterationMark(ch);
     }
 
     public static boolean isValidWordKanji(String s) {
