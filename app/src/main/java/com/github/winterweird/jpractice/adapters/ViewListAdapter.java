@@ -54,15 +54,25 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        Entry obj = entries.get(position);
+        final Entry obj = entries.get(position);
         String kanji = obj.getKanji();
         String reading = obj.getReading();
         holder.kanji.setText(kanji);
         holder.reading.setText(reading);
+        
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO
+            }
+        });
+        
+        final int pos = position;
+        View delButton = holder.root.findViewById(R.id.buttonDelete);
+        delButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItemAtPosition(entries.indexOf(obj));
             }
         });
     }
@@ -71,17 +81,14 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.view_list_list_item, parent, false);
+        
         SwipeToRevealButtonItemLayout bil = (SwipeToRevealButtonItemLayout)view;
         LinearLayout buttonsLayout = bil.findViewById(R.id.buttonsLayout);
+        
         ImageButton b = (ImageButton)inflater.inflate(R.layout.delete_button, buttonsLayout, true)
             .findViewById(R.id.buttonDelete); // THIS. FUCKING THIS.
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("Test", "test");
-            }
-        });
         bil.addButton(b);
+        
         return new ItemViewHolder(bil);
     }
 
@@ -112,6 +119,17 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         entries.add(e);
         notifyItemInserted(pos);
     }
+
+    public void deleteItemAtPosition(int position) {
+        notifyItemRemoved(position);
+        Entry e = entries.get(position);
+        DatabaseHelper.getHelper(context).delete(e);
+        for (int i = position + 1; i < entries.size(); i++) {
+            entries.set(i, entries.get(i).setPosition(i-1));
+        }
+        entries.remove(position);
+    }
+    
     public void setContent(ArrayList<Entry> entries) {
         this.entries = entries;
         notifyDataSetChanged();

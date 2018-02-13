@@ -325,6 +325,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public void delete(List l) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(FeedReaderContract.FeedLists.TABLE_NAME,
+                FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME + " = ?",
+                new String[]{l.getListname()});
+    }
+    
+    public void delete(Entry e) {
+        SQLiteDatabase db = getWritableDatabase();
+        int deleted = db.delete(FeedReaderContract.FeedEntries.TABLE_NAME,
+                FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ? AND " +
+                FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI + " = ?",
+                new String[]{String.valueOf(e.getListname()), e.getKanji()});
+
+        boolean keepGoing = true;
+        int listNm = e.getListname();
+        
+        for (int i = e.getPosition() + 1; keepGoing; i++) {
+            ContentValues cv = new ContentValues();
+            cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, i-1);
+            keepGoing = db.update(FeedReaderContract.FeedEntries.TABLE_NAME, cv,
+                    FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ? AND " +
+                    FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION + " = ?",
+                    new String[]{String.valueOf(listNm), String.valueOf(i)}) == 1;
+            Log.d("Test", "i was " + i);
+        }
+    }
+    
+    public void delete(Preset p) {
+        // TODO
+    }
+    
+    public void delete(Tag t) {
+        // TODO
+    }
+    
+    public void delete(TaggedWord tw) {
+        // TODO
+    }
+
     public int idOf(String table, String column) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = null;

@@ -2,6 +2,8 @@ package com.github.winterweird.jpractice.database.data;
 
 import android.content.ContentValues;
 
+import java.util.Objects;
+
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 
 public class Entry implements DatabaseEntryInterface {
@@ -59,5 +61,18 @@ public class Entry implements DatabaseEntryInterface {
 
     public Entry setPosition(int newPosition) {
         return new Entry(listname, kanji, reading, newPosition, tier);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Entry)) return false;
+        Entry other = (Entry)o;
+        return this.listname == other.listname && this.kanji.equals(other.kanji);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(new Integer(this.listname), this.kanji);
     }
 }
