@@ -13,6 +13,7 @@ import android.widget.Toast;
 import android.widget.TextView;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
@@ -21,6 +22,7 @@ import com.github.winterweird.jpractice.R;
 
 public class CreateNewListDialog extends DialogFragment {
     protected List result;
+    private Handler handler = new Handler();
     
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,15 +39,20 @@ public class CreateNewListDialog extends DialogFragment {
                                 Toast.LENGTH_LONG).show();
                     }
                     else {
-                        List l = new List(s);
-                        DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
-                        try {
-                            dbhelper.insert(l);
-                            result = l;
-                        } catch (SQLException ex) {
-                            Toast.makeText(getContext(), "Error: " + ex.getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                        }
+                        final List l = new List(s);
+                        final DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    dbhelper.insert(l);
+                                    result = l;
+                                } catch (SQLException ex) {
+                                    Toast.makeText(getContext(), "Error: " + ex.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }
                 }
             }).setNegativeButton(R.string.createListCancel,
