@@ -17,6 +17,7 @@ import android.view.LayoutInflater;            // IDFK
 import android.widget.SimpleCursorAdapter;     // AAAAA
 import android.widget.ArrayAdapter;            // AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 import android.content.Context;
+import android.os.Handler;                     // Threads exist
 
 // log
 import android.util.Log;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 public class CreateDatabaseEntryDialog extends DialogFragment {
     protected Entry result;
     protected View view;
+    private Handler handler = new Handler();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -112,10 +114,10 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                         .show();
                 }
                 else {
-                    DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
+                    final DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
 
                     List c = (List)spinner.getSelectedItem();
-                    String listName = c.getListname();
+                    final String listName = c.getListname();
                     
                     int tid = dbhelper.idOf(FeedReaderContract.FeedLists.TABLE_NAME, listName);
                     Log.d("TID", ""+tid);
@@ -123,18 +125,23 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                     
                     result = new Entry(tid, ktxt, rtxt, dbhelper.entryCount(listName), tier);
                     
-                    try {
-                        dbhelper.insert(result);
-                        Toast.makeText(act, "Added entry to " + listName, Toast.LENGTH_LONG).show();
-                    } catch (SQLException ex) {
-                        Toast.makeText(act, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                    } finally {
-                        dialog.dismiss();
-                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                dbhelper.insert(result);
+                                Toast.makeText(act, "Added entry to " + listName, Toast.LENGTH_LONG).show();
+                            } catch (SQLException ex) {
+                                Toast.makeText(act, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                            } finally {
+                                dialog.dismiss();
+                            }
+                        }
+                    });
                 }
             }
+
         });
-        
         return dialog;
     }
 }
