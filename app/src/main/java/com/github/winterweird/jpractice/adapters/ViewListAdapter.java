@@ -10,6 +10,7 @@ import android.content.Context;
 import android.widget.Toast;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
+import android.os.Handler;
 
 import android.util.Log;
 
@@ -27,6 +28,7 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     private ArrayList<Entry> entries;
     private String listName;
     private boolean filterOn;
+    Handler handler = new Handler();
     
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView kanji, reading;
@@ -72,7 +74,13 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         delButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteItemAtPosition(entries.indexOf(obj));
+                int iof = entries.indexOf(obj);
+                if (iof == -1) {
+                    Toast.makeText(context, "Entry not found: " + obj, Toast.LENGTH_LONG).show();
+                }
+                else {
+                    deleteItemAtPosition(entries.indexOf(obj));
+                }
             }
         });
     }
@@ -99,12 +107,17 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
                     Toast.LENGTH_LONG).show();
         }
         else {
-            Entry e1 = entries.get(fromPosition);
-            Entry e2 = entries.get(toPosition);
-            DatabaseHelper dbhelper = DatabaseHelper.getHelper(context);
-            dbhelper.swapEntries(e1, e2);
+            final Entry e1 = entries.get(fromPosition);
+            final Entry e2 = entries.get(toPosition);
             entries.set(fromPosition, e2.setPosition(fromPosition));
             entries.set(toPosition, e1.setPosition(toPosition));
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    DatabaseHelper dbhelper = DatabaseHelper.getHelper(context);
+                    dbhelper.swapEntries(e1, e2);
+                }
+            });
             notifyItemMoved(fromPosition, toPosition);
         }
     }
@@ -122,12 +135,20 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
 
     public void deleteItemAtPosition(int position) {
         notifyItemRemoved(position);
-        Entry e = entries.get(position);
-        DatabaseHelper.getHelper(context).delete(e);
-        for (int i = position + 1; i < entries.size(); i++) {
+        final int pos = position;
+        final Entry e = entries.get(pos);
+        for (int i = pos + 1; i < entries.size(); i++) {
             entries.set(i, entries.get(i).setPosition(i-1));
         }
-        entries.remove(position);
+        entries.remove(pos);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                synchronized(entries) {
+                    DatabaseHelper.getHelper(context).delete(e);
+                }
+            }
+        });
     }
     
     public void setContent(ArrayList<Entry> entries) {
