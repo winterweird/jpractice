@@ -35,4 +35,17 @@ public class Preset implements DatabaseEntryInterface {
         cv.put(FeedReaderContract.FeedPresets.COLUMN_NAME_ALGORITHM, algorithm);
         return cv;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Preset)) return false;
+        Preset other = (Preset)o;
+        return this.id == other.id; // only identifying field
+    }
+
+    @Override
+    public int hashCode() {
+        return new Integer(this.id).hashCode(); // bcz I'm lazy
+    }
 }
