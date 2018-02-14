@@ -74,7 +74,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedLists._ID));
             String listname = cursor.getString(cursor.getColumnIndexOrThrow(cnmListname));
-            Log.d("TID", ""+id);
             arr.add(new List(listname));
         }
         cursor.close();
@@ -140,7 +139,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String reading = cursor.getString(cursor.getColumnIndexOrThrow(cnmReading));
             int tier = cursor.getInt(cursor.getColumnIndexOrThrow(cnmTier));
             int position = cursor.getInt(cursor.getColumnIndexOrThrow(cnmPosition));
-            Log.d("entryPos", "entry:" + listname + " " + kanji + " is #" + position);
             arr.add(new Entry(listname, kanji, reading, position, tier));
         }
         cursor.close();
@@ -164,10 +162,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String fmtString = "UPDATE %s SET %s = %d WHERE %s = %d AND %s = '%s'";
 
-        Log.d("kanj", entry1.getKanji());
-        Log.d("kanj", entry2.getKanji());
-        Log.d("pos", "pos1 = " + pos1);
-        Log.d("pos", "pos2 = " + pos2);
         
         db.execSQL(String.format(fmtString,
                     tnm,
@@ -187,7 +181,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cnmList, lnm,
                     cnmKan,  entry1.getKanji()));
 
-        getEntries("あ");
         return 1;
     }
 
@@ -225,6 +218,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return arr;
     }
 
+    /**
+     * These methods are broken. TODO: Fix.
+     */
     public Cursor getTaggedWords() {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedTaggedWords.TABLE_NAME,
@@ -342,6 +338,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean keepGoing = true;
         int listNm = e.getListname();
         
+        // never tell anyone I said it's okay to write for loops like this
         for (int i = e.getPosition() + 1; keepGoing; i++) {
             ContentValues cv = new ContentValues();
             cv.put(FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION, i-1);
@@ -349,7 +346,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ? AND " +
                     FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION + " = ?",
                     new String[]{String.valueOf(listNm), String.valueOf(i)}) == 1;
-            Log.d("Test", "i was " + i);
         }
     }
     
@@ -365,6 +361,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // TODO
     }
 
+    /**
+     * Get id of a given data entry.
+     *
+     * TODO: Update with overload for each of the different
+     * DatabaseEntryInterface implementing classes.
+     */
     public int idOf(String table, String column) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = null;
