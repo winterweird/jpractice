@@ -27,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.design.widget.FloatingActionButton;
 import android.widget.ArrayAdapter;
+import android.os.Handler;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -55,6 +56,7 @@ public class ViewListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ViewListAdapter adapter;
     private String listName;
+    private Handler handler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,11 +180,16 @@ public class ViewListActivity extends AppCompatActivity {
     }
 
     public void deleteList() {
-        SQLiteDatabase db = DatabaseHelper.getHelper(this).getWritableDatabase();
-        String table = FeedReaderContract.FeedLists.TABLE_NAME;
-        String where = FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME + " = ?";
-        String[] whereArgs = new String[] {listName};
-        db.delete(table, where, whereArgs);
-        Toast.makeText(this, "List deleted", Toast.LENGTH_LONG).show();
+        final SQLiteDatabase db = DatabaseHelper.getHelper(this).getWritableDatabase();
+        final String table = FeedReaderContract.FeedLists.TABLE_NAME;
+        final String where = FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME + " = ?";
+        final String[] whereArgs = new String[] {listName};
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                db.delete(table, where, whereArgs);
+                Toast.makeText(ViewListActivity.this, "List deleted", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
