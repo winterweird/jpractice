@@ -2,6 +2,8 @@ package com.github.winterweird.jpractice.database.data;
 
 import android.content.ContentValues;
 
+import java.util.Objects;
+
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 
 public class TaggedWord implements DatabaseEntryInterface {
@@ -26,5 +28,18 @@ public class TaggedWord implements DatabaseEntryInterface {
         cv.put(FeedReaderContract.FeedTaggedWords.COLUMN_NAME_TAG, tag);
         cv.put(FeedReaderContract.FeedTaggedWords.COLUMN_NAME_KANJI_ID, kanjiID);
         return cv;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TaggedWord)) return false;
+        TaggedWord other = (TaggedWord)o;
+        return this.tag == other.tag && this.kanjiID == other.kanjiID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(new Integer(this.tag), new Integer(this.kanjiID));
     }
 }
