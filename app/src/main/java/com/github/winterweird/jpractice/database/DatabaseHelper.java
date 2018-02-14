@@ -190,13 +190,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 EMPTY_STRING_ARRAY);
         
         ArrayList<Preset> arr = new ArrayList<>();
+        String cnmId = FeedReaderContract.FeedPresets._ID;
         String cnmListname = FeedReaderContract.FeedPresets.COLUMN_NAME_LISTNAME;
         String cnmAlgorithm = FeedReaderContract.FeedPresets.COLUMN_NAME_ALGORITHM;
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(cnmId));
             int listname = cursor.getInt(cursor.getColumnIndexOrThrow(cnmListname));
             String algorithm = cursor.getString(cursor.getColumnIndexOrThrow(cnmAlgorithm));
-            arr.add(new Preset(listname, algorithm));
+            arr.add(new Preset(id, listname, algorithm));
         }
         cursor.close();
         return arr;
