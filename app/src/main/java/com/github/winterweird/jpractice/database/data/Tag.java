@@ -20,4 +20,17 @@ public class Tag implements DatabaseEntryInterface {
         cv.put(FeedReaderContract.FeedTags.COLUMN_NAME_TAG, tag);
         return cv;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag other = (Tag)o;
+        return this.tag.equals(other.tag);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.tag.hashCode();
+    }
 }
