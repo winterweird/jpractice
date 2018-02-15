@@ -28,6 +28,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.design.widget.FloatingActionButton;
 import android.widget.ArrayAdapter;
 import android.os.Handler;
+import android.content.SharedPreferences;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -180,6 +181,10 @@ public class ViewListActivity extends AppCompatActivity {
     }
 
     public void deleteList() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preferencesFile),
+                Context.MODE_PRIVATE);
+        final String prefList = prefs.getString(getString(R.string.preferencesLastUsedList), null);
+        final SharedPreferences.Editor edit = prefs.edit();
         final SQLiteDatabase db = DatabaseHelper.getHelper(this).getWritableDatabase();
         final String table = FeedReaderContract.FeedLists.TABLE_NAME;
         final String where = FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME + " = ?";
@@ -189,6 +194,10 @@ public class ViewListActivity extends AppCompatActivity {
             public void run() {
                 db.delete(table, where, whereArgs);
                 Toast.makeText(ViewListActivity.this, "List deleted", Toast.LENGTH_LONG).show();
+                if (listName.equals(prefList)) {
+                    edit.remove(getString(R.string.preferencesLastUsedList));
+                    edit.commit();
+                }
             }
         });
     }

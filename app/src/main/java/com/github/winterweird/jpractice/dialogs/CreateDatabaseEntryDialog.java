@@ -18,6 +18,7 @@ import android.widget.SimpleCursorAdapter;     // AAAAA
 import android.widget.ArrayAdapter;            // AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 import android.content.Context;
 import android.os.Handler;                     // Threads exist
+import android.content.SharedPreferences;
 
 // log
 import android.util.Log;
@@ -43,6 +44,7 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
     protected Entry result;
     protected View view;
     private Handler handler = new Handler();
+    private SharedPreferences.Editor edit;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -54,6 +56,11 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
         final TextView reading = view.findViewById(R.id.createEntryReading);
         final Spinner spinner = view.findViewById(R.id.createEntrySpinner);
 
+        SharedPreferences prefs = act.getSharedPreferences(act.getString(R.string.preferencesFile),
+                Context.MODE_PRIVATE);
+        String lastUsedList = prefs.getString(act.getString(R.string.preferencesLastUsedList),
+                null);
+
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
         String[] from = new String[] {FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME};
         int   [] to   = new int[]    {R.id.createEntrySpinnerItem};
@@ -63,6 +70,15 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
         adapter.setDropDownViewResource(R.layout.create_new_entry_spinner_layout);
         
         spinner.setAdapter(adapter);
+        if (lastUsedList != null) {
+            List prefList = new List(lastUsedList);
+            int i = adapter.getPosition(prefList);
+            if (i != -1) {
+                spinner.setSelection(i);
+            }
+        }
+
+        edit = prefs.edit();
         
         final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme)
             .setView(view)
@@ -130,9 +146,14 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                         public void run() {
                             try {
                                 dbhelper.insert(result);
-                                Toast.makeText(act, "Added entry to " + listName, Toast.LENGTH_LONG).show();
+                                Toast.makeText(act, "Added entry to " + listName,
+                                        Toast.LENGTH_LONG).show();
+                                edit.putString(act.getString(R.string.preferencesLastUsedList),
+                                        listName);
+                                edit.commit();
                             } catch (SQLException ex) {
-                                Toast.makeText(act, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(act, "Error: " + ex.getMessage(),
+                                        Toast.LENGTH_LONG).show();
                             } finally {
                                 dialog.dismiss();
                             }

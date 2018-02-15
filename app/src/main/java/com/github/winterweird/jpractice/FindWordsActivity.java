@@ -55,7 +55,8 @@ public class FindWordsActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences prefs = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences(getString(R.string.preferencesFile),
+                Context.MODE_PRIVATE);
         edit = prefs.edit();
         Resources res = getResources();
         

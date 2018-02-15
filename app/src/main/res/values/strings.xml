@@ -27,7 +27,9 @@
     <string name="viewportWidthDialogTitle">Select viewport width</string>
     <string name="viewportWidthDialogOK">OK</string>
 
+    <string name="preferencesFile">preferencesFile</string>
     <string name="preferencesViewportWidth">preferencesViewportWidth</string>
+    <string name="preferencesLastUsedList">preferencesLastUsedList</string>
 
     <string name="createListListNameHint">List name</string>
     <string name="createListMessage">Create new list</string>
