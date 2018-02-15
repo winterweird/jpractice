@@ -80,6 +80,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return arr;
     }
 
+    public String getListname(int listId) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedLists.TABLE_NAME
+                + " WHERE " + FeedReaderContract.FeedLists._ID + " = " + listId,
+                EMPTY_STRING_ARRAY);
+        String lnm = null;
+        if (cursor.getCount() == 1) {
+            String cnmListname = FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME;
+            cursor.moveToFirst();
+            lnm = cursor.getString(cursor.getColumnIndexOrThrow(cnmListname));
+        }
+        cursor.close();
+        return lnm;
+    }
+
     public ArrayList<Entry> getEntries() {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -361,6 +376,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     
     public void delete(TaggedWord tw) {
         // TODO
+    }
+
+    public String createEntryCSVText(String[] lists) {
+        StringBuilder sb = new StringBuilder();
+        ArrayList<Entry> entries = getEntries(lists);
+        for (Entry e : entries) {
+            sb.append(getListname(e.getListname()));
+            sb.append(",");
+            sb.append(e.getKanji());
+            sb.append(",");
+            sb.append(e.getReading());
+            sb.append(",");
+            sb.append(e.getPosition());
+            sb.append(",");
+            sb.append(e.getTier());
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     /**

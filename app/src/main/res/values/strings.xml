@@ -21,6 +21,7 @@
     <string name="listsActionCreateNewList">Create new list</string>
 
     <string name="viewListActionDeleteList">Delete list</string>
+    <string name="viewListActionExportListAsCSV">Export list as CSV</string>
     
     <string name="viewEntryActionEditEntry">Edit entry</string>
 

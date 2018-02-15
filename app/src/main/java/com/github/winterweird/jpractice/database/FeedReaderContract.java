@@ -29,8 +29,8 @@ public final class FeedReaderContract {
         public static final String COLUMN_NAME_LISTNAME = "listname";
         public static final String COLUMN_NAME_KANJI    = "kanji";
         public static final String COLUMN_NAME_READING  = "reading";
-        public static final String COLUMN_NAME_TIER     = "tier";
         public static final String COLUMN_NAME_POSITION = "position";
+        public static final String COLUMN_NAME_TIER     = "tier";
 
         public static final String CREATE =
             "CREATE TABLE "      + TABLE_NAME + "("        +
@@ -38,8 +38,8 @@ public final class FeedReaderContract {
             COLUMN_NAME_LISTNAME + " INTEGER NOT NULL,"    +
             COLUMN_NAME_KANJI    + " TEXT NOT NULL,"       +
             COLUMN_NAME_READING  + " TEXT NOT NULL,"       +
-            COLUMN_NAME_TIER     + " INTEGER NOT NULL,"    +
             COLUMN_NAME_POSITION + " INTEGER NOT NULL,"    +
+            COLUMN_NAME_TIER     + " INTEGER NOT NULL,"    +
             "FOREIGN KEY(" + COLUMN_NAME_LISTNAME + ") "   +
              "REFERENCES " + FeedLists.TABLE_NAME + "("    + 
                              FeedLists._ID        + ") "   +

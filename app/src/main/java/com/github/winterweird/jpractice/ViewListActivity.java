@@ -29,6 +29,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.widget.ArrayAdapter;
 import android.os.Handler;
 import android.content.SharedPreferences;
+import android.content.Intent;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -85,7 +86,7 @@ public class ViewListActivity extends AppCompatActivity {
             }
         });
 
-}
+    }
 
     @Override
     public void onResume() {
@@ -98,6 +99,10 @@ public class ViewListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.viewListActionDeleteList:
                 showDeleteConfirmationDialog();
+                return true;
+            case R.id.viewListActionExportListAsCSV:
+                exportListAsCSV();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -149,7 +154,7 @@ public class ViewListActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "CreateDatabaseEntryDialog");
         }
     }
-    
+
     public static class CreateDatabaseEntryAndRefreshDialog extends CreateDatabaseEntryDialog {
         private ViewListAdapter adapter;
         private String listname;
@@ -157,20 +162,20 @@ public class ViewListActivity extends AppCompatActivity {
             this.adapter = adapter;
             this.listname = listname;
         }
-        
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             Dialog d = super.onCreateDialog(savedInstanceState);
             List l = new List(listname);
             Spinner s = view.findViewById(R.id.createEntrySpinner);
             View txtView = view.findViewById(R.id.createEntrySpinnerLabelText);
-            
+
             s.setSelection((((ArrayAdapter<List>)s.getAdapter()).getPosition(l)));
             s.setVisibility(View.GONE);
             txtView.setVisibility(View.GONE);
             return d;
         }
-        
+
         @Override
         public void onDismiss(DialogInterface dialog) {
             super.onDismiss(dialog);
@@ -178,6 +183,15 @@ public class ViewListActivity extends AppCompatActivity {
                 adapter.insertItem(this.result);
             }
         }
+    }
+
+    public void exportListAsCSV() {
+        DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, dbhelper.createEntryCSVText(new String[]{listName}));
+        intent.setType("text/plain");
+        startActivity(intent);
     }
 
     public void deleteList() {
