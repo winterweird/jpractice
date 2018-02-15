@@ -27,5 +27,6 @@
         <activity android:name="FindWordsActivity"
             android:label="@string/findWordsActivity" />
         <activity android:name="ViewListActivity" />
+        <activity android:name="ViewEntryActivity" />
     </application>
 </manifest>

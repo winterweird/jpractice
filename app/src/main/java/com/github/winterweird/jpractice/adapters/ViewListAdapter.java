@@ -11,12 +11,14 @@ import android.widget.Toast;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
 import android.os.Handler;
+import android.content.Intent;
 
 import android.util.Log;
 
 import java.util.ArrayList;
 
 import com.github.winterweird.jpractice.R;
+import com.github.winterweird.jpractice.ViewEntryActivity;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.Entry;
@@ -62,10 +64,16 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         holder.kanji.setText(kanji);
         holder.reading.setText(reading);
         
-        holder.root.setOnClickListener(new View.OnClickListener() {
+        View linlayout = holder.root.findViewById(R.id.linearLayout);
+        linlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                Intent intent = new Intent(context, ViewEntryActivity.class);
+                intent.putExtra(context.getResources().getString(R.string.intentViewEntryList),
+                        obj.getListname());
+                intent.putExtra(context.getResources().getString(R.string.intentViewEntryKanji),
+                        obj.getKanji());
+                context.startActivity(intent);
             }
         });
         

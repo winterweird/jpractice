@@ -21,6 +21,8 @@
     <string name="listsActionCreateNewList">Create new list</string>
 
     <string name="viewListActionDeleteList">Delete list</string>
+    
+    <string name="viewEntryActionEditEntry">Edit entry</string>
 
     <string name="viewItemButtonDeleteText">Delete</string>
 
@@ -50,4 +52,9 @@
 
     <string name="intentJishoSearchWord">INTENT_JISHO_SEARCH_WORD</string>
     <string name="intentViewListListName">INTENT_VIEW_LIST_LIST_NAME</string>
+    <string name="intentViewEntryList">INTENT_VIEW_ENTRY_LIST</string>
+    <string name="intentViewEntryKanji">INTENT_VIEW_ENTRY_KANJI</string>
+
+    <string name="viewEntryPageTabOverview">Overview</string>
+    <string name="viewEntryPageTabJisho">Jisho</string>
 </resources>
