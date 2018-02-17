@@ -32,7 +32,7 @@ import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
 
 import java.util.ArrayList;
 
-public class NamedListsActivity extends AppCompatActivity {
+public class NamedListsActivity extends ToolbarBackButtonActivity {
     private RecyclerView recyclerView;
     private NamedListsAdapter adapter;
     private NamedListsAdapter.OnItemClickListener listener;
@@ -40,9 +40,6 @@ public class NamedListsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.named_lists);
-
-        Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
-        setSupportActionBar(toolbar);
 
         recyclerView = (RecyclerView)findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

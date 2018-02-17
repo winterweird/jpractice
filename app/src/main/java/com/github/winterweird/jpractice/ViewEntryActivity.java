@@ -15,7 +15,7 @@ import android.util.Log;
 
 import com.github.winterweird.jpractice.adapters.ViewEntryTabsPagerAdapter;
 
-public class ViewEntryActivity extends AppCompatActivity {
+public class ViewEntryActivity extends ToolbarBackButtonActivity {
     private String kanji;
     private int listname;
 
@@ -23,9 +23,6 @@ public class ViewEntryActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_entry);
-
-        Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
-        setSupportActionBar(toolbar);
 
         kanji = getIntent().getExtras().getString(
                 getResources().getString(R.string.intentViewEntryKanji));
@@ -35,7 +32,7 @@ public class ViewEntryActivity extends AppCompatActivity {
 
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setSelectedTabIndicatorColor(getColor(R.color.primaryColor));
-        tabs.setTabTextColors(Color.parseColor("#727272"),
+        tabs.setTabTextColors(Color.parseColor("#727272"), // gray
                 getColor(R.color.primaryColor));
         ViewPager pager = findViewById(R.id.activity_main_layout);
         

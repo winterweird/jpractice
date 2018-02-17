@@ -38,7 +38,7 @@ import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 
-public class FindWordsActivity extends AppCompatActivity
+public class FindWordsActivity extends ToolbarBackButtonActivity
             implements ViewportWidthAdjustmentDialog.ViewportWidthAdjustmentDialogListener {
             
     private int MIN_PAGE_WIDTH;
@@ -52,8 +52,6 @@ public class FindWordsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.find_words);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
-        setSupportActionBar(toolbar);
 
         SharedPreferences prefs = this.getSharedPreferences(getString(R.string.preferencesFile),
                 Context.MODE_PRIVATE);

@@ -54,7 +54,7 @@ import com.github.winterweird.jpractice.dialogs.CreateDatabaseEntryDialog;
 import com.github.winterweird.jpractice.adapters.ViewListAdapter;
 import com.github.winterweird.jpractice.adapters.ViewListItemTouchHelperCallback;
 
-public class ViewListActivity extends AppCompatActivity {
+public class ViewListActivity extends ToolbarBackButtonActivity {
     private RecyclerView recyclerView;
     private ViewListAdapter adapter;
     private String listName;
@@ -64,9 +64,6 @@ public class ViewListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
-
-        Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
-        setSupportActionBar(toolbar);
 
         recyclerView = (RecyclerView)findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
