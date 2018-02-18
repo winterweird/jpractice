@@ -115,7 +115,7 @@
             android:padding="10dp"
             android:textSize="18dp"
             android:text="@string/viewEntryOverviewMeaningsLabel" />
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,6 +124,15 @@
             android:padding="10dp"
             android:textSize="18dp"
             android:text="@string/viewEntryOverviewTagsLabel" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewTagsLabel"
+            android:id="@+id/viewEntryOverviewSharedLabel"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:text="@string/viewEntryOverviewSharedLabel" />
 
             
         <!-- EditTexts -->
@@ -176,9 +185,31 @@
             android:focusable="false"
             android:text="placeholder4"
             android:textColor="@color/secondaryTextColor" />
-        
+
+        <EditText
+            android:background="@android:color/transparent"
+            android:id="@+id/viewEntryOverviewNoSharedContentLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBaseline_toBaselineOf="@id/viewEntryOverviewSharedLabel"
+            app:layout_constraintRight_toRightOf="parent"
+            android:enabled="false"
+            android:focusable="false"
+            android:text=""
+            android:textColor="@color/secondaryTextColor" />
         
          <!-- TODO: add tags content -->
+
+         <android.support.v7.widget.RecyclerView
+             android:id="@+id/viewEntryOverviewSharedRecyclerView"
+             android:layout_width="0dp"
+             android:layout_height="0dp"
+             android:padding="10dp"
+             app:layout_constraintLeft_toLeftOf="parent"
+             app:layout_constraintRight_toRightOf="parent"
+             app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewSharedLabel"
+             app:layout_constraintBottom_toBottomOf="parent" /> 
         
     </android.support.constraint.ConstraintLayout>
 

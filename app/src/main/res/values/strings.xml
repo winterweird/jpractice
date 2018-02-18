@@ -65,6 +65,7 @@
     <string name="viewEntryOverviewListLabel">List:</string>
     <string name="viewEntryOverviewMeaningsLabel">Meanings:</string>
     <string name="viewEntryOverviewTagsLabel">Tags:</string>
+    <string name="viewEntryOverviewSharedLabel">Shared kanji:</string>
 
     <string name="webviewActionModeAddToLast">Add to list</string>
 </resources>

@@ -20,7 +20,7 @@ public class NamedListsAdapter extends RecyclerView.Adapter<NamedListsAdapter.It
     private Context context;
     private ArrayList<List> lists;
     private OnItemClickListener listener;
-    
+
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView listname;
         public View root;

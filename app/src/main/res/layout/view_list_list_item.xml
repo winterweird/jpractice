@@ -19,6 +19,7 @@
         android:padding="10dp"
         android:orientation="vertical"
         android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         android:background="@android:color/white">
 
         <TextView

@@ -15,16 +15,22 @@ import android.graphics.Color;
 import android.widget.Toast;
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.DividerItemDecoration;
 
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.github.winterweird.jpractice.R;
 import com.github.winterweird.jpractice.ViewEntryActivity;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.Entry;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
+import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter;
+import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter.KanjiWordPair;
 
 public class ViewEntryPageFragmentOverview extends Fragment {
     private String kanji;
@@ -72,12 +78,48 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         this.position = actualEntry.getPosition();
         this.tier = actualEntry.getTier();
 
+        HashSet<Integer> checkedKanji = new HashSet<>();
+        final ArrayList<KanjiWordPair> sharedKanjiArr = new ArrayList<>();
+        for (int i = 0; i < this.kanji.length(); i++) {
+            Integer cp = this.kanji.codePointAt(i);
+            if (JapaneseTextProcessingUtilities.isKanji(cp)) {
+                if (!checkedKanji.contains(cp)) {
+                    checkedKanji.add(cp);
+                    for (Entry e : entries) {
+                        if (e == actualEntry) continue;
+                        if (e.getKanji().indexOf(cp) != -1) {
+                            sharedKanjiArr.add(new KanjiWordPair(this.kanji.substring(i, i+1), e));
+                        }
+                    }
+                }
+            }
+        }
+
+        final Activity act = getActivity();
+        RecyclerView rv = view.findViewById(R.id.viewEntryOverviewSharedRecyclerView);
+        SharedKanjiListAdapter adapter = new SharedKanjiListAdapter(act, sharedKanjiArr);
+        adapter.setOnItemClickListener(new SharedKanjiListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(SharedKanjiListAdapter.ItemViewHolder viewHolder, int position) {
+                navigateToViewEntry(sharedKanjiArr.get(position).getWord(), 0, 0);
+            }
+        });
+
+        rv.setLayoutManager(new LinearLayoutManager(act));
+        rv.addItemDecoration(new DividerItemDecoration(act, DividerItemDecoration.VERTICAL));
+        rv.setAdapter(adapter);
+
+        if (adapter.getItemCount() == 0) {
+            TextView noSharedKanji = view.findViewById(R.id.viewEntryOverviewNoSharedContentLabel);
+            noSharedKanji.setText("No shared kanji");
+        }
+
         prevButton = view.findViewById(R.id.buttonsWrapperLayoutLeft);
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (position == 0) {
-                    Toast.makeText(getActivity(), "No previous list entry",
+                    Toast.makeText(act, "No previous list entry",
                             Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -91,7 +133,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
             @Override
             public void onClick(View v) {
                 if (position == entries.size()-1) {
-                    Toast.makeText(getActivity(), "No next list entry",
+                    Toast.makeText(act, "No next list entry",
                             Toast.LENGTH_LONG).show();
                 }
                 else {

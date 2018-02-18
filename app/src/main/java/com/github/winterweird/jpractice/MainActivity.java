@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 
+// for debug purposes
+import com.github.winterweird.jpractice.database.DatabaseHelper;
+import com.github.winterweird.jpractice.database.data.Entry;
+
 public class MainActivity extends AppCompatActivity {
     /** Called when the activity is first created. */
     @Override
@@ -37,5 +41,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    // debug tool to fix parts of the database which accidentally break
+    private void fix(Entry broken, Entry fixed) {
+        DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
+        dbhelper.update(broken, fixed);
     }
 }
