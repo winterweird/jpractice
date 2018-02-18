@@ -58,6 +58,8 @@
 
     <string name="viewEntryPageTabOverview">Overview</string>
     <string name="viewEntryPageTabJisho">Jisho</string>
+    <string name="viewEntryOverviewPrevButtonText">Prev</string>
+    <string name="viewEntryOverviewNextButtonText">Next</string>
     <string name="viewEntryOverviewKanjiLabel">Word:</string>
     <string name="viewEntryOverviewReadingLabel">Reading:</string>
     <string name="viewEntryOverviewMeaningsLabel">Meanings:</string>

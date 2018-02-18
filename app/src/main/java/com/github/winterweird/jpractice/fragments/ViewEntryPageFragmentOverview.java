@@ -13,10 +13,15 @@ import android.widget.TextView;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.widget.Toast;
+import android.app.Activity;
+import android.content.Intent;
+
+import android.util.Log;
 
 import java.util.ArrayList;
 
 import com.github.winterweird.jpractice.R;
+import com.github.winterweird.jpractice.ViewEntryActivity;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.Entry;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
@@ -41,7 +46,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_entry_page_overview, container, false);
-        
+
         kanjiContent    = view.findViewById(R.id.viewEntryOverviewKanjiContent);
         readingContent  = view.findViewById(R.id.viewEntryOverviewReadingContent);
         meaningsContent = view.findViewById(R.id.viewEntryOverviewMeaningsContent);
@@ -52,7 +57,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
         String lname = dbhelper.getListname(this.listname);
-        ArrayList<Entry> entries = dbhelper.getEntries(lname);
+        final ArrayList<Entry> entries = dbhelper.getEntries(lname);
         
         Entry matchEntry = new Entry(this.listname, this.kanji, "", 0);
         Entry actualEntry = entries.get(entries.indexOf(matchEntry));
@@ -60,6 +65,35 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         this.reading = actualEntry.getReading();
         this.position = actualEntry.getPosition();
         this.tier = actualEntry.getTier();
+
+        View prevButton = view.findViewById(R.id.buttonsWrapperLayoutLeft);
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position == 0) {
+                    Toast.makeText(getActivity(), "No previous list entry",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    navigateToViewEntry(entries.get(position-1), R.anim.enter_left,
+                            R.anim.leave_right);
+                }
+            }
+        });
+        View nextButton = view.findViewById(R.id.buttonsWrapperLayoutRight);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position == entries.size()-1) {
+                    Toast.makeText(getActivity(), "No next list entry",
+                            Toast.LENGTH_LONG).show();
+                }
+                else {
+                    navigateToViewEntry(entries.get(position+1), R.anim.enter_right,
+                            R.anim.leave_left);
+                }
+            }
+        });
         
         kanjiContent.setText(this.kanji);
         readingContent.setText(this.reading);
@@ -128,5 +162,16 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         et.setBackgroundTintList(ColorStateList.valueOf(
                     editable ? Color.BLACK
                              : Color.TRANSPARENT));
+    }
+
+    private void navigateToViewEntry(Entry e, int anim1, int anim2) {
+        Activity act = getActivity();
+        Intent intent = new Intent(act, ViewEntryActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        intent.putExtra(act.getString(R.string.intentViewEntryList), e.getListname());
+        intent.putExtra(act.getString(R.string.intentViewEntryKanji), e.getKanji());
+        startActivity(intent);
+        act.overridePendingTransition(anim1, anim2);
+        act.finish();
     }
 }
