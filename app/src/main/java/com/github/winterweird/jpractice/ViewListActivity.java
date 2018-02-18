@@ -115,15 +115,13 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
     }
 
     public void getListContent() {
-        if (adapter == null) {
-            DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-            ArrayList<Entry> entries = dbhelper.getEntries(listName);
-            adapter = new ViewListAdapter(this, entries, listName, false);
-            recyclerView.setAdapter(adapter);
-            ItemTouchHelper.Callback callback = new ViewListItemTouchHelperCallback(adapter);
-            ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-            touchHelper.attachToRecyclerView(recyclerView);
-        }
+        DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
+        ArrayList<Entry> entries = dbhelper.getEntries(listName);
+        adapter = new ViewListAdapter(this, entries, listName, false);
+        recyclerView.setAdapter(adapter);
+        ItemTouchHelper.Callback callback = new ViewListItemTouchHelperCallback(adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
     }
 
     public void showDeleteConfirmationDialog() {

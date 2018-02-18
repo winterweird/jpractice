@@ -62,6 +62,7 @@
     <string name="viewEntryOverviewNextButtonText">Next</string>
     <string name="viewEntryOverviewKanjiLabel">Word:</string>
     <string name="viewEntryOverviewReadingLabel">Reading:</string>
+    <string name="viewEntryOverviewListLabel">List:</string>
     <string name="viewEntryOverviewMeaningsLabel">Meanings:</string>
     <string name="viewEntryOverviewTagsLabel">Tags:</string>
 

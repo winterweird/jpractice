@@ -36,6 +36,10 @@ public class ViewEntryPageFragmentOverview extends Fragment {
     private EditText kanjiContent;
     private EditText readingContent;
     private EditText meaningsContent;
+    private EditText listContent;
+
+    private View nextButton;
+    private View prevButton;
     
     public ViewEntryPageFragmentOverview(int listname, String kanji) {
         this.kanji = kanji;
@@ -50,10 +54,12 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         kanjiContent    = view.findViewById(R.id.viewEntryOverviewKanjiContent);
         readingContent  = view.findViewById(R.id.viewEntryOverviewReadingContent);
         meaningsContent = view.findViewById(R.id.viewEntryOverviewMeaningsContent);
+        listContent     = view.findViewById(R.id.viewEntryOverviewListContent);
 
         setEditable(kanjiContent, false);
         setEditable(readingContent, false);
         setEditable(meaningsContent, false);
+        setEditable(listContent, false);
         
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
         String lname = dbhelper.getListname(this.listname);
@@ -66,7 +72,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         this.position = actualEntry.getPosition();
         this.tier = actualEntry.getTier();
 
-        View prevButton = view.findViewById(R.id.buttonsWrapperLayoutLeft);
+        prevButton = view.findViewById(R.id.buttonsWrapperLayoutLeft);
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +86,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
                 }
             }
         });
-        View nextButton = view.findViewById(R.id.buttonsWrapperLayoutRight);
+        nextButton = view.findViewById(R.id.buttonsWrapperLayoutRight);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +103,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         
         kanjiContent.setText(this.kanji);
         readingContent.setText(this.reading);
+        listContent.setText(lname);
         // TODO: set meanings text
         return view;
     }
@@ -109,6 +116,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
 
     public boolean commit() {
         boolean continueEditMode = false;
+        
         String k = this.kanjiContent.getText().toString().replaceAll("\\s+", "");
         if (k.isEmpty()) {
             Toast.makeText(getContext(), "Kanji cannot be empty", Toast.LENGTH_LONG).show();
@@ -142,7 +150,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
                         Toast.LENGTH_LONG).show();
                 continueEditMode = true;
             }
-            else {
+            else if (!k.equals(this.kanji) || !r.equals(this.reading)){
                 dbhelper.update(oldEntry, newEntry);
             }
         }
@@ -154,6 +162,8 @@ public class ViewEntryPageFragmentOverview extends Fragment {
     public void setEditable(boolean editable) {
         setEditable(kanjiContent, editable);
         setEditable(readingContent, editable);
+        nextButton.setClickable(!editable);
+        prevButton.setClickable(!editable);
     }
 
     private void setEditable(EditText et, boolean editable) {

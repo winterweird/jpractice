@@ -102,6 +102,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewReadingLabel"
+            android:id="@+id/viewEntryOverviewListLabel"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:text="@string/viewEntryOverviewListLabel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewListLabel"
             android:id="@+id/viewEntryOverviewMeaningsLabel"
             android:padding="10dp"
             android:textSize="18dp"
@@ -144,6 +153,18 @@
             android:textColor="@color/secondaryTextColor" />
         
         <EditText
+            android:id="@+id/viewEntryOverviewListContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBaseline_toBaselineOf="@+id/viewEntryOverviewListLabel"
+            app:layout_constraintRight_toRightOf="parent"
+            android:enabled="false"
+            android:focusable="false"
+            android:text="placeholder3"
+            android:textColor="@color/secondaryTextColor" />
+        
+        <EditText
             android:background="@android:color/transparent"
             android:id="@+id/viewEntryOverviewMeaningsContent"
             android:layout_width="0dp"
@@ -153,8 +174,9 @@
             app:layout_constraintRight_toRightOf="parent"
             android:enabled="false"
             android:focusable="false"
-            android:text="placeholder3"
+            android:text="placeholder4"
             android:textColor="@color/secondaryTextColor" />
+        
         
          <!-- TODO: add tags content -->
         
