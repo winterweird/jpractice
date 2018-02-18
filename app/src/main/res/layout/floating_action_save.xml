@@ -2,12 +2,13 @@
 <android.support.design.widget.FloatingActionButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/floatingActionButtonEdit"
+    android:id="@+id/floatingActionButtonSave"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"  
-    android:src="@drawable/ic_mode_edit_white_36dp"
+    android:src="@drawable/ic_save_white_36dp"
     android:layout_margin="16dp"
     android:clickable="true"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintLeft_toLeftOf="@id/centerline"
     app:layout_anchor="@id/activity_main_layout" />
+

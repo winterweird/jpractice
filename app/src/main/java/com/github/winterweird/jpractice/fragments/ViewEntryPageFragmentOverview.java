@@ -8,12 +8,29 @@ import android.view.View;
 import java.net.URLEncoder;
 import android.webkit.WebView;
 import java.io.UnsupportedEncodingException;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import com.github.winterweird.jpractice.R;
+import com.github.winterweird.jpractice.database.DatabaseHelper;
+import com.github.winterweird.jpractice.database.data.Entry;
+import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
 
 public class ViewEntryPageFragmentOverview extends Fragment {
     private String kanji;
+    private String reading;
     private int listname;
+    private int position;
+    private int tier;
+
+    private EditText kanjiContent;
+    private EditText readingContent;
+    private EditText meaningsContent;
     
     public ViewEntryPageFragmentOverview(int listname, String kanji) {
         this.kanji = kanji;
@@ -23,7 +40,93 @@ public class ViewEntryPageFragmentOverview extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.view_entry_page_jisho, container, false);
+        View view = inflater.inflate(R.layout.view_entry_page_overview, container, false);
+        
+        kanjiContent    = view.findViewById(R.id.viewEntryOverviewKanjiContent);
+        readingContent  = view.findViewById(R.id.viewEntryOverviewReadingContent);
+        meaningsContent = view.findViewById(R.id.viewEntryOverviewMeaningsContent);
+
+        setEditable(kanjiContent, false);
+        setEditable(readingContent, false);
+        setEditable(meaningsContent, false);
+        
+        DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
+        String lname = dbhelper.getListname(this.listname);
+        ArrayList<Entry> entries = dbhelper.getEntries(lname);
+        
+        Entry matchEntry = new Entry(this.listname, this.kanji, "", 0);
+        Entry actualEntry = entries.get(entries.indexOf(matchEntry));
+
+        this.reading = actualEntry.getReading();
+        this.position = actualEntry.getPosition();
+        this.tier = actualEntry.getTier();
+        
+        kanjiContent.setText(this.kanji);
+        readingContent.setText(this.reading);
+        // TODO: set meanings text
         return view;
+    }
+
+    public void reset() {
+        kanjiContent.setText(this.kanji);
+        readingContent.setText(this.reading);
+        setEditable(false);
+    }
+
+    public boolean commit() {
+        boolean continueEditMode = false;
+        String k = this.kanjiContent.getText().toString().replaceAll("\\s+", "");
+        if (k.isEmpty()) {
+            Toast.makeText(getContext(), "Kanji cannot be empty", Toast.LENGTH_LONG).show();
+            continueEditMode = true;
+        }
+        else if (!JapaneseTextProcessingUtilities.isValidWordKanji(k)) {
+            Toast.makeText(getContext(), "Not a valid word: must contain only " +
+                    "Japanese characters and at least one kanji", Toast.LENGTH_LONG).show();
+            continueEditMode = true;
+        }
+        
+        String r = this.readingContent.getText().toString().replaceAll("\\s+", "");
+        if (r.isEmpty()) {
+            Toast.makeText(getContext(), "Reading cannot be empty", Toast.LENGTH_LONG).show();
+            continueEditMode = true;
+        }
+        else if (!JapaneseTextProcessingUtilities.isValidWordReading(r)) {
+            Toast.makeText(getContext(), "Not a valid reading: must only contain kana",
+                    Toast.LENGTH_LONG).show();
+            continueEditMode = true;
+        }
+
+        if (!continueEditMode) {
+            Entry oldEntry = new Entry(this.listname, this.kanji, this.reading,
+                    this.position, this.tier);
+            Entry newEntry = new Entry(this.listname, k, r, this.position, this.tier);
+            
+            DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
+            if (dbhelper.exists(newEntry) && !k.equals(this.kanji)) {
+                Toast.makeText(getContext(), "Kanji already exists in list",
+                        Toast.LENGTH_LONG).show();
+                continueEditMode = true;
+            }
+            else {
+                dbhelper.update(oldEntry, newEntry);
+            }
+        }
+        
+        setEditable(continueEditMode);
+        return continueEditMode;
+    }
+
+    public void setEditable(boolean editable) {
+        setEditable(kanjiContent, editable);
+        setEditable(readingContent, editable);
+    }
+
+    private void setEditable(EditText et, boolean editable) {
+        et.setEnabled(editable);
+        et.setFocusableInTouchMode(editable);
+        et.setBackgroundTintList(ColorStateList.valueOf(
+                    editable ? Color.BLACK
+                             : Color.TRANSPARENT));
     }
 }

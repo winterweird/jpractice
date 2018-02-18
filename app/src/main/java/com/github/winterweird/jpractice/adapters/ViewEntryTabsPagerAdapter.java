@@ -13,6 +13,8 @@ public class ViewEntryTabsPagerAdapter extends FragmentPagerAdapter {
     private String kanji;
     private int listname;
     private Context context;
+    private Fragment tab0;
+    private Fragment tab1;
     
     public ViewEntryTabsPagerAdapter(Context context, FragmentManager fm,
             int listname, String kanji) {
@@ -20,15 +22,17 @@ public class ViewEntryTabsPagerAdapter extends FragmentPagerAdapter {
         this.context = context;
         this.kanji = kanji;
         this.listname = listname;
+        this.tab0 = new ViewEntryPageFragmentOverview(this.listname, this.kanji);
+        this.tab1 = new ViewEntryPageFragmentJisho(this.kanji);
     }
     
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new ViewEntryPageFragmentOverview(listname, kanji);
+                return tab0;
             case 1:
-                return new ViewEntryPageFragmentJisho(kanji);
+                return tab1;
             default:
                 throw new IllegalArgumentException("view entry fragment position is not 0 or 1");
         }

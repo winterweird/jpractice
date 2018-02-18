@@ -59,4 +59,9 @@
     <string name="viewEntryPageTabOverview">Overview</string>
     <string name="viewEntryPageTabJisho">Jisho</string>
     <string name="viewEntryOverviewKanjiLabel">Word:</string>
+    <string name="viewEntryOverviewReadingLabel">Reading:</string>
+    <string name="viewEntryOverviewMeaningsLabel">Meanings:</string>
+    <string name="viewEntryOverviewTagsLabel">Tags:</string>
+
+    <string name="webviewActionModeAddToLast">Add to list</string>
 </resources>

@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <!-- TextViews -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/viewEntryOverviewKanjiLabel"
+            android:padding="10dp"
+            android:textSize="18dp"
             android:text="@string/viewEntryOverviewKanjiLabel" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewKanjiLabel"
+            android:id="@+id/viewEntryOverviewReadingLabel"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:text="@string/viewEntryOverviewReadingLabel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewReadingLabel"
+            android:id="@+id/viewEntryOverviewMeaningsLabel"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:text="@string/viewEntryOverviewMeaningsLabel" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewMeaningsLabel"
+            android:id="@+id/viewEntryOverviewTagsLabel"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:text="@string/viewEntryOverviewTagsLabel" />
+
+            
+        <!-- EditTexts -->
+        <EditText
+            android:id="@+id/viewEntryOverviewKanjiContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBaseline_toBaselineOf="@+id/viewEntryOverviewKanjiLabel"
+            app:layout_constraintRight_toRightOf="parent"
+            android:enabled="false"
+            android:focusable="false"
+            android:text="placeholder1"
+            android:textColor="@color/secondaryTextColor" />
+
+
+        <EditText
+            android:id="@+id/viewEntryOverviewReadingContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBaseline_toBaselineOf="@+id/viewEntryOverviewReadingLabel"
+            app:layout_constraintRight_toRightOf="parent"
+            android:enabled="false"
+            android:focusable="false"
+            android:text="placeholder2"
+            android:textColor="@color/secondaryTextColor" />
+        
+        <EditText
+            android:background="@android:color/transparent"
+            android:id="@+id/viewEntryOverviewMeaningsContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBaseline_toBaselineOf="@id/viewEntryOverviewMeaningsLabel"
+            app:layout_constraintRight_toRightOf="parent"
+            android:enabled="false"
+            android:focusable="false"
+            android:text="placeholder3"
+            android:textColor="@color/secondaryTextColor" />
+        
+         <!-- TODO: add tags content -->
+        
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

@@ -378,6 +378,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // TODO
     }
 
+    public boolean exists(List l) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedLists.TABLE_NAME +
+                FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ?",
+                new String[]{l.getListname()});
+        boolean itDoes = c.getCount() == 1;
+        c.close();
+        return itDoes;
+    }
+
+    public boolean exists(Entry e) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedEntries.TABLE_NAME +
+                " WHERE " + FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI + " = ? AND " +
+                FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ?",
+                new String[]{e.getKanji(), String.valueOf(e.getListname())});
+        boolean itDoes = c.getCount() == 1;
+        c.close();
+        return itDoes;
+    }
+
+    public boolean exists(Preset p) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedPresets.TABLE_NAME +
+                " WHERE " + FeedReaderContract.FeedPresets._ID + " = ?",
+                new String[]{String.valueOf(p.getId())});
+        boolean itDoes = c.getCount() == 1;
+        c.close();
+        return itDoes;
+    }
+
+    public boolean exists(Tag t) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedTags.TABLE_NAME +
+                " WHERE " + FeedReaderContract.FeedTags.COLUMN_NAME_TAG + " = ?",
+                new String[]{t.getTag()});
+        boolean itDoes = c.getCount() == 1;
+        c.close();
+        return itDoes;
+    }
+
+    public boolean exists(TaggedWord tw) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + FeedReaderContract.FeedTaggedWords.TABLE_NAME +
+                " WHERE " + FeedReaderContract.FeedTaggedWords.COLUMN_NAME_TAG + " = ? AND " +
+                FeedReaderContract.FeedTaggedWords.COLUMN_NAME_KANJI_ID + " = ?",
+                new String[]{String.valueOf(tw.getTag()), String.valueOf(tw.getKanjiId())});
+        boolean itDoes = c.getCount() == 1;
+        c.close();
+        return itDoes;
+    }
+
+    public void update(Entry oldEntry, Entry newEntry) {
+        SQLiteDatabase db = getReadableDatabase();
+        db.update(FeedReaderContract.FeedEntries.TABLE_NAME, newEntry.getContentValues(),
+                FeedReaderContract.FeedEntries.COLUMN_NAME_KANJI + " = ? AND " +
+                FeedReaderContract.FeedEntries.COLUMN_NAME_LISTNAME + " = ?",
+                new String[]{oldEntry.getKanji(), String.valueOf(oldEntry.getListname())});
+    }
+
     public String createEntryCSVText(String[] lists) {
         StringBuilder sb = new StringBuilder();
         ArrayList<Entry> entries = getEntries(lists);

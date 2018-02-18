@@ -14,10 +14,18 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.github.winterweird.jpractice.adapters.ViewEntryTabsPagerAdapter;
+import com.github.winterweird.jpractice.components.DisableableViewPager;
+import com.github.winterweird.jpractice.fragments.ViewEntryPageFragmentOverview;
 
 public class ViewEntryActivity extends ToolbarBackButtonActivity {
     private String kanji;
     private int listname;
+    private ViewEntryTabsPagerAdapter adapter;
+    private DisableableViewPager pager;
+    private TabLayout tabs;
+    private FloatingActionButton editfab;
+    private FloatingActionButton savefab;
+    private FloatingActionButton cancelfab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,32 +38,55 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
                 getResources().getString(R.string.intentViewEntryList));
         setTitle(kanji);
 
-        TabLayout tabs = findViewById(R.id.tabs);
+        tabs = findViewById(R.id.tabs);
         tabs.setSelectedTabIndicatorColor(getColor(R.color.primaryColor));
         tabs.setTabTextColors(Color.parseColor("#727272"), // gray
                 getColor(R.color.primaryColor));
-        ViewPager pager = findViewById(R.id.activity_main_layout);
+        pager = findViewById(R.id.activity_main_layout);
         
-        ViewEntryTabsPagerAdapter adapter = new ViewEntryTabsPagerAdapter(
-                this, getSupportFragmentManager(), listname, kanji);
+        adapter = new ViewEntryTabsPagerAdapter(this, getSupportFragmentManager(), listname, kanji);
 
         pager.setAdapter(adapter);
         tabs.setupWithViewPager(pager);
 
-        FloatingActionButton fab = findViewById(R.id.floatingActionButtonEdit);
-        fab.setOnClickListener(new View.OnClickListener() {
+        editfab = findViewById(R.id.floatingActionButtonEdit);
+        editfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Test", "hello floating action button edit mode");
+                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
+                f1.setEditable(true);
+                setEditMode(true);
             }
         });
+
+        cancelfab = findViewById(R.id.floatingActionButtonCancel);
+        cancelfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
+                f1.reset();
+                setEditMode(false);
+            }
+        });
+        
+        savefab = findViewById(R.id.floatingActionButtonSave);
+        savefab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
+                boolean continueEditMode = f1.commit();
+                setEditMode(continueEditMode);
+            }
+        });
+        
+        setEditMode(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.viewEntryActionEditEntry:
-                Log.d("Test", "hello edit mode");
+                setEditMode(true);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -65,5 +96,20 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.view_entry_menu, menu);
         return true;
+    }
+
+    public void setEditMode(boolean active) {
+        pager.setPagingEnabled(!active);
+        if (active) {
+            tabs.getTabAt(0).select();
+            editfab.setVisibility(View.GONE);
+            savefab.setVisibility(View.VISIBLE);
+            cancelfab.setVisibility(View.VISIBLE);
+        }
+        else {
+            editfab.setVisibility(View.VISIBLE);
+            savefab.setVisibility(View.GONE);
+            cancelfab.setVisibility(View.GONE);
+        }
     }
 }
