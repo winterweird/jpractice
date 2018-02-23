@@ -139,18 +139,19 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                     Log.d("TID", ""+tid);
                     int tier = 5; // TODO: put in integer resources
                     
-                    result = new Entry(tid, ktxt, rtxt, dbhelper.entryCount(listName), tier);
+                    final Entry res= new Entry(tid, ktxt, rtxt, dbhelper.entryCount(listName), tier);
                     
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                dbhelper.insert(result);
+                                dbhelper.insert(res);
                                 Toast.makeText(act, "Added entry to " + listName,
                                         Toast.LENGTH_LONG).show();
                                 edit.putString(act.getString(R.string.preferencesLastUsedList),
                                         listName);
                                 edit.commit();
+                                result = res;
                             } catch (SQLException ex) {
                                 Toast.makeText(act, "Error: " + ex.getMessage(),
                                         Toast.LENGTH_LONG).show();
