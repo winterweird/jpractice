@@ -46,16 +46,23 @@ public class ViewEntryPageFragmentOverview extends Fragment {
 
     private View nextButton;
     private View prevButton;
-    
+
     public ViewEntryPageFragmentOverview(int listname, String kanji) {
         this.kanji = kanji;
         this.listname = listname;
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_entry_page_overview, container, false);
+        if (this.kanji == null) return view;
 
         kanjiContent    = view.findViewById(R.id.viewEntryOverviewKanjiContent);
         readingContent  = view.findViewById(R.id.viewEntryOverviewReadingContent);
