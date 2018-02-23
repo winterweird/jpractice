@@ -1,5 +1,12 @@
 package com.github.winterweird.jpractice;
 
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.support.v7.app.ActionBar;
+import android.view.inputmethod.EditorInfo;
+import android.view.KeyEvent;
 import android.widget.Spinner;
 import android.app.Dialog;
 import android.support.v7.app.AppCompatActivity;
@@ -53,12 +60,18 @@ import com.github.winterweird.jpractice.dialogs.ConfirmationDialog;
 import com.github.winterweird.jpractice.dialogs.CreateDatabaseEntryDialog;
 import com.github.winterweird.jpractice.adapters.ViewListAdapter;
 import com.github.winterweird.jpractice.adapters.ViewListItemTouchHelperCallback;
+import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
 
 public class ViewListActivity extends ToolbarBackButtonActivity {
     private RecyclerView recyclerView;
     private ViewListAdapter adapter;
     private String listName;
     private Handler handler = new Handler();
+
+    private boolean searchOpened = false;
+    private MenuItem searchAction;
+    private EditText searchBox;
+    private String searched = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,18 +95,41 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
                 showCreateEntryDialog();
             }
         });
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getListContent();
+        
+        if (JapaneseTextProcessingUtilities.isJapanese(searched))
+            adapter.filter(searched);
+    }
+    
+    /**
+     * Store search box info.
+     *
+     * I need to do this because if I don't hide the search box before going to
+     * another activity, there will just be a dangling search box somewhere that
+     * I can't access, but which will show up on the toolbar no matter what I
+     * do.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        String storeSearch = searched;
+        boolean restoreSearch = searchOpened;
+        setShowFilterSearchBox(false);
+        searched = storeSearch;
+        searchOpened = restoreSearch;
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.viewListActionFilterWords:
+                toggleShowFilterSearchBox();
+                return true;
             case R.id.viewListActionDeleteList:
                 showDeleteConfirmationDialog();
                 return true;
@@ -106,6 +142,14 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        searchAction = menu.findItem(R.id.viewListActionFilterWords);
+        setShowFilterSearchBox(searchOpened);
+        return super.onPrepareOptionsMenu(menu);
+        
     }
 
     @Override
@@ -209,5 +253,56 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
                 }
             }
         });
+    }
+
+    public void toggleShowFilterSearchBox() {
+        setShowFilterSearchBox(!searchOpened);
+    }
+
+    private void setShowFilterSearchBox(boolean visible) {
+        searchOpened = visible;
+        ActionBar action = getSupportActionBar();
+        Log.d("Test", "visibility is " + visible);
+        action.setDisplayShowCustomEnabled(visible);
+        action.setDisplayShowTitleEnabled(!visible);
+        
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (!visible) {
+            if (searchBox != null) {
+                searchBox.setText("");
+                searchBox.clearFocus();
+                imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+            }
+
+            action.setCustomView(null);
+            
+            searchAction.setIcon(getDrawable(R.drawable.ic_search_white_24dp));
+        }
+        else {
+            action.setCustomView(R.layout.search_box);
+            searchBox = (EditText)action.getCustomView().findViewById(R.id.searchBox);
+            searchBox.setText(searched);
+            searchBox.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) { }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searched = s.toString();
+                    if (JapaneseTextProcessingUtilities.isJapanese(searched)) {
+                        adapter.filter(searched);
+                    }
+                }
+            });
+            searchBox.requestFocus();
+            
+            imm.showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT);
+            
+            searchAction.setIcon(getDrawable(R.drawable.ic_cancel_white_24dp));
+        }
     }
 }

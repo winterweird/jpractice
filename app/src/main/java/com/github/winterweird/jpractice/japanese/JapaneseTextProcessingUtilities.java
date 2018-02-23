@@ -38,6 +38,13 @@ public class JapaneseTextProcessingUtilities {
         return isKana(ch) || isKanji(ch) || isIdeographicIterationMark(ch);
     }
 
+    public static boolean isJapanese(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (!isJapanese(s.codePointAt(i))) return false;
+        }
+        return true;
+    }
+
     public static boolean isValidWordKanji(String s) {
         boolean haskanji = false;
         for (int i = 0; i < s.length(); i++) {

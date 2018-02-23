@@ -12,6 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.ImageButton;
 import android.os.Handler;
 import android.content.Intent;
+import android.text.Html;
+import android.text.SpannableString;
+import android.widget.TextView.BufferType;
+import android.text.style.BackgroundColorSpan;
+import android.graphics.Color;
 
 import android.util.Log;
 
@@ -28,8 +33,10 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         implements ViewListItemTouchHelperCallback.ItemTouchHelperAdapter {
     private Context context;
     private ArrayList<Entry> entries;
+    private ArrayList<Entry> realContent;
     private String listName;
     private boolean filterOn;
+    private String filter = "";
     Handler handler = new Handler();
     
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -47,6 +54,7 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
             String listName, boolean filterOn) {
         this.context = context;
         this.entries = entries;
+        this.realContent = entries;
         this.filterOn = filterOn;
         this.listName = listName;
     }
@@ -59,10 +67,25 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final Entry obj = entries.get(position);
-        String kanji = obj.getKanji();
-        String reading = obj.getReading();
-        holder.kanji.setText(kanji);
-        holder.reading.setText(reading);
+        String sKanji = obj.getKanji();
+        String sReading = obj.getReading();
+        SpannableString kanji = new SpannableString(sKanji);
+        SpannableString reading = new SpannableString(sReading);
+        BackgroundColorSpan highlightColor = new BackgroundColorSpan(Color.YELLOW);
+        if (!filter.isEmpty()) {
+            int index = 0;
+            while ((index = sKanji.indexOf(filter, index)) != -1) {
+                kanji.setSpan(highlightColor, index, index + filter.length(), 0);
+                index += filter.length() + 1;
+            }
+            index = 0;
+            while ((index = sReading.indexOf(filter, index)) != -1) {
+                reading.setSpan(highlightColor, index, index + filter.length(), 0);
+                index += filter.length() + 1;
+            }
+        }
+        holder.kanji.setText(kanji, BufferType.SPANNABLE);
+        holder.reading.setText(reading, BufferType.SPANNABLE);
         
         View linlayout = holder.root.findViewById(R.id.linearLayout);
         linlayout.setOnClickListener(new View.OnClickListener() {
@@ -113,21 +136,20 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
         if (filterOn) {
             Toast.makeText(context, "Reordering disabled while filters active",
                     Toast.LENGTH_LONG).show();
+            return;
         }
-        else {
-            final Entry e1 = entries.get(fromPosition);
-            final Entry e2 = entries.get(toPosition);
-            entries.set(fromPosition, e2.setPosition(fromPosition));
-            entries.set(toPosition, e1.setPosition(toPosition));
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    DatabaseHelper dbhelper = DatabaseHelper.getHelper(context);
-                    dbhelper.swapEntries(e1, e2);
-                }
-            });
-            notifyItemMoved(fromPosition, toPosition);
-        }
+        final Entry e1 = entries.get(fromPosition);
+        final Entry e2 = entries.get(toPosition);
+        entries.set(fromPosition, e2.setPosition(fromPosition));
+        entries.set(toPosition, e1.setPosition(toPosition));
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                DatabaseHelper dbhelper = DatabaseHelper.getHelper(context);
+                dbhelper.swapEntries(e1, e2);
+            }
+        });
+        notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override
@@ -138,10 +160,16 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     public void insertItem(Entry e) {
         int pos = getItemCount();
         entries.add(e);
+        realContent.add(e);
         notifyItemInserted(pos);
     }
 
     public void deleteItemAtPosition(int position) {
+        if (filterOn) {
+            Toast.makeText(context, "Deletion disabled while filters active",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
         notifyItemRemoved(position);
         final int pos = position;
         final Entry e = entries.get(pos);
@@ -162,6 +190,22 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     public void setContent(ArrayList<Entry> entries) {
         this.entries = entries;
         notifyDataSetChanged();
+    }
+
+    public void filter(String s) {
+        filter = s;
+        if (filter == null) filter = "";
+        ArrayList<Entry> filtered = new ArrayList<>(realContent.size());
+        for (Entry e : realContent) {
+            if (e.getKanji().contains(filter)) {
+                filtered.add(e);
+            }
+            else if (e.getReading().contains(filter)) {
+                filtered.add(e);
+            }
+        }
+        setContent(filtered);
+        filterOn = !filter.isEmpty();
     }
 }
 
