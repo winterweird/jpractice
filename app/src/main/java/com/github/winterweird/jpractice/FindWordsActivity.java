@@ -26,6 +26,9 @@ import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.database.Cursor;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.annotation.TargetApi;
 import android.util.Log;
 // own classes
 import com.github.winterweird.jpractice.database.DatabaseHelper;
@@ -78,11 +81,23 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
         
         final Activity activity = this;
         webview.setWebViewClient(new WebViewClient() {
+            // Solution to deprecation warning found here:
+            // https://stackoverflow.com/a/33419123/4498826
+            @SuppressWarnings("deprecation")
             @Override
             public void onReceivedError(WebView view, int errorCode,
                     String description, String failingUrl) {
                 Toast.makeText(activity, "Error: " + description, Toast.LENGTH_LONG).show();
             }
+            
+            @TargetApi(android.os.Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest req,
+                    WebResourceError rerr) {
+                // Redirect to deprecated method, so you can use it in all SDK versions
+                onReceivedError(view, rerr.getErrorCode(),
+                        rerr.getDescription().toString(), req.getUrl().toString());
+} 
             @Override
             public void onPageFinished(WebView view, String url) {
                 updateViewportWidth();
