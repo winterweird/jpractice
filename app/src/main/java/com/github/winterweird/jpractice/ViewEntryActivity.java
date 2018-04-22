@@ -54,7 +54,6 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
             @Override
             public void onClick(View v) {
                 ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
-                f1.setEditable(true);
                 setEditMode(true);
             }
         });
@@ -100,6 +99,7 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
 
     public void setEditMode(boolean active) {
         pager.setPagingEnabled(!active);
+        
         if (active) {
             tabs.getTabAt(0).select();
             editfab.setVisibility(View.GONE);
@@ -111,5 +111,8 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
             savefab.setVisibility(View.GONE);
             cancelfab.setVisibility(View.GONE);
         }
+        
+        ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
+        f1.setEditable(active);
     }
 }
