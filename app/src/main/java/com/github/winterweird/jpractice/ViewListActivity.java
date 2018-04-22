@@ -209,10 +209,23 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
             Spinner s = view.findViewById(R.id.createEntrySpinner);
             View txtView = view.findViewById(R.id.createEntrySpinnerLabelText);
 
-            s.setSelection((((ArrayAdapter<List>)s.getAdapter()).getPosition(l)));
+            ArrayAdapter<List> adapter = getArrayAdapter(s);
+            s.setSelection(getArrayAdapter(s).getPosition(l));
             s.setVisibility(View.GONE);
             txtView.setVisibility(View.GONE);
             return d;
+        }
+
+        /**
+         * Helper method: Get array adapter from spinner while suppressing
+         * unchecked warnings as minutely as possible.
+         *
+         * @param s The spinner to get the adapter from
+         * @return The adapter of the spinner cast as an ArrayAdapter&lt;List&gt;
+         */
+        @SuppressWarnings("unchecked")
+        private ArrayAdapter<List> getArrayAdapter(Spinner s) {
+            return (ArrayAdapter<List>)s.getAdapter();
         }
 
         @Override
