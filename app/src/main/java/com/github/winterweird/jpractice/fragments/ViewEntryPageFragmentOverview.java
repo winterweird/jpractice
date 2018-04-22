@@ -179,6 +179,9 @@ public class ViewEntryPageFragmentOverview extends Fragment {
                     setMeaningsVisibility(showMeanings);
                 });
             }
+            else {
+                Toast.makeText(getContext(), "Error retrieving meanings", Toast.LENGTH_LONG).show();
+            }
         });
         meaningsButton.setOnClickListener(v -> setMeaningsVisibility(!showMeanings));
         return view;
@@ -194,7 +197,6 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         meaningsContent.setVisibility(visible ? View.VISIBLE : View.GONE);
 
         // set the constraints of the label below
-        
         int bottomOf = visible ? R.id.viewEntryOverviewMeaningsContent
                                : R.id.viewEntryOverviewShowHiddenMeaningsButton;
         
@@ -204,6 +206,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
                 bottomOf, ConstraintSet.BOTTOM, 0);
         constraintSet.applyTo(constraintLayout);
         
+        // set the class variable indicating visibility
         showMeanings = visible;
     }
 

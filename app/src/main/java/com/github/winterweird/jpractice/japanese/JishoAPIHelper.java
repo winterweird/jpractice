@@ -32,6 +32,10 @@ public class JishoAPIHelper {
      * - neither kanji nor reading is equal, but there are results (will choose
      *   first result)
      * - there were no results (returns null)
+     *
+     * @param kanji The word to match with
+     * @param reading The reading to match with
+     * @param callback The action to be performed on the retrieved Result
      */
     public static void getBestMatch(String kanji, String reading, Callback callback) {
         new Thread(() -> {
@@ -52,6 +56,9 @@ public class JishoAPIHelper {
      *   first result)
      * - there were no results (returns null)
      *
+     * @param kanji The word to match with
+     * @param reading The reading to match with
+     *
      * @return The result which is the best match, or null if there were no
      * matching results
      */
@@ -63,18 +70,9 @@ public class JishoAPIHelper {
         try  {
             String file = "api/v1/search/words?keyword="  + URLEncoder.encode(kanji, "UTF-8");
             url = new URL("http", "jisho.org", 80, file);
-        } catch (UnsupportedEncodingException e) {
-            String stacktrace = Arrays.stream(e.getStackTrace())
-                                      .map(s->s.toString())
-                                      .collect(Collectors.joining("\n"));
-            Log.e("Test", stacktrace);
-            return null; // cannot encode the file
-        } catch (MalformedURLException e) {
-            String stacktrace = Arrays.stream(e.getStackTrace())
-                                      .map(s->s.toString())
-                                      .collect(Collectors.joining("\n"));
-            Log.e("Test", stacktrace);
-            return null; // cannot create the url
+        } catch (Exception e) {
+            Log.e("Test", stacktraceAsString(e));
+            return null; // early return, won't be able to use the API anyways at this point
         }
         
         // try retrieving the result
@@ -89,20 +87,11 @@ public class JishoAPIHelper {
                 for (Result r : resList) {
                     if (r.closer(res, kanji, reading)) {
                         res = r;
-                        Log.d("Test", res.toString());
                     }
                 }
             }
-        } catch (IOException e) {
-            String stacktrace = Arrays.stream(e.getStackTrace())
-                                      .map(s->s.toString())
-                                      .collect(Collectors.joining("\n"));
-            Log.e("Test", stacktrace);
-        } catch (JSONException e) {
-            String stacktrace = Arrays.stream(e.getStackTrace())
-                                      .map(s->s.toString())
-                                      .collect(Collectors.joining("\n"));
-            Log.e("Test", stacktrace);
+        } catch (Exception e) {
+            Log.e("Test", stacktraceAsString(e));
         }
         
         return res;
@@ -195,6 +184,7 @@ public class JishoAPIHelper {
                 || desiredReading.equals(reading) && !desiredReading.equals(r.reading);
         }
 
+        @Override
         public String toString() {
             return String.format("{kanji: %s, reading: %s, meanings: %s}", kanji, reading, meanings);
         }
@@ -219,5 +209,18 @@ public class JishoAPIHelper {
 
             return new JSONObject(result.toString("UTF-8"));
         }
+    }
+
+    /**
+     * Helper method: translate the stack trace to a string.
+     * 
+     * @param e The stacktrace to translate
+     * @return A string version of the stacktrace, with the stack elements
+     * separated by newlines
+     */
+    private static String stacktraceAsString(Exception e) {
+        return Arrays.stream(e.getStackTrace())
+                     .map(s->s.toString())
+                     .collect(Collectors.joining("\n"));
     }
 }

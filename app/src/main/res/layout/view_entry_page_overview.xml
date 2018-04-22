@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
+    <ScrollView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <android.support.constraint.ConstraintLayout
         android:id="@+id/viewEntryOverviewConstraintLayout"
         android:layout_width="match_parent"
@@ -180,7 +183,7 @@
             android:id="@+id/viewEntryOverviewMeaningsContent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewShowHiddenMeaningsButton"
             app:layout_constraintRight_toRightOf="parent"
             android:enabled="false"
@@ -228,4 +231,5 @@
             android:textColor="@color/secondaryTextColor" />
     </android.support.constraint.ConstraintLayout>
 
+    </ScrollView>
 </LinearLayout>
