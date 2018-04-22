@@ -1,6 +1,6 @@
 RESOURCES =
 
-all: installDbg push run
+all: installDbg run
 
 installDbg: $(RESOURCES)
 	./gradlew installDebug
@@ -13,3 +13,5 @@ run:
 
 logcat:
 	adb logcat *:S AndroidRuntime:E Test:D $(EXTRA_LOGCAT_TAGS)
+
+cat: all logcat
