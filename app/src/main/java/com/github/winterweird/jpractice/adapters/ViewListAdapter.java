@@ -10,13 +10,13 @@ import android.content.Context;
 import android.widget.Toast;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
-import android.os.Handler;
 import android.content.Intent;
 import android.text.Html;
 import android.text.SpannableString;
 import android.widget.TextView.BufferType;
 import android.text.style.BackgroundColorSpan;
 import android.graphics.Color;
+import android.os.Handler;
 
 import android.util.Log;
 
@@ -37,7 +37,7 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListAdapter.ItemVi
     private String listName;
     private boolean filterOn;
     private String filter = "";
-    Handler handler = new Handler();
+    private Handler handler = new Handler();
     
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView kanji, reading;

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/viewEntryOverviewConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,7 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
-        
+
         <android.support.constraint.Guideline
             android:id="@+id/buttonline"
             android:layout_width="wrap_content"
@@ -31,7 +33,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/buttonsWrapperLayoutLeft">
-            
+
             <!-- Navigation buttons -->
             <ImageView
                 android:layout_width="wrap_content"
@@ -40,7 +42,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
-            
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,9 +51,9 @@
                 app:layout_constraintBottom_toBottomOf="@id/viewEntryOverviewPrevButton"
                 android:textColor="@color/secondaryTextColor"
                 android:text="@string/viewEntryOverviewPrevButtonText" />
-            
+
         </android.support.constraint.ConstraintLayout>
-        
+
         <android.support.constraint.ConstraintLayout
             android:padding="10dp"
             android:layout_width="wrap_content"
@@ -59,7 +61,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/buttonsWrapperLayoutRight">
-            
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +69,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_arrow_forward_black_24dp" />
-                
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +78,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/viewEntryOverviewNextButton"
                 android:textColor="@color/secondaryTextColor"
                 android:text="@string/viewEntryOverviewNextButtonText" />
-        
+
         </android.support.constraint.ConstraintLayout>
 
         <!-- Label TextViews -->
@@ -88,7 +90,7 @@
             android:padding="10dp"
             android:textSize="18dp"
             android:text="@string/viewEntryOverviewKanjiLabel" />
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,7 +103,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewReadingLabel"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewReadingContent"
             android:id="@+id/viewEntryOverviewListLabel"
             android:padding="10dp"
             android:textSize="18dp"
@@ -110,7 +112,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewListLabel"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewListContent"
             android:id="@+id/viewEntryOverviewMeaningsLabel"
             android:padding="10dp"
             android:textSize="18dp"
@@ -119,12 +121,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewMeaningsLabel"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewShowHiddenMeaningsButton"
             android:id="@+id/viewEntryOverviewTagsLabel"
             android:padding="10dp"
             android:textSize="18dp"
             android:text="@string/viewEntryOverviewTagsLabel" />
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -134,7 +136,7 @@
             android:textSize="18dp"
             android:text="@string/viewEntryOverviewSharedLabel" />
 
-            
+
         <!-- EditTexts -->
         <EditText
             android:id="@+id/viewEntryOverviewKanjiContent"
@@ -160,7 +162,7 @@
             android:focusable="false"
             android:text="placeholder2"
             android:textColor="@color/secondaryTextColor" />
-        
+
         <EditText
             android:id="@+id/viewEntryOverviewListContent"
             android:layout_width="0dp"
@@ -172,18 +174,19 @@
             android:focusable="false"
             android:text="placeholder3"
             android:textColor="@color/secondaryTextColor" />
-        
+
         <EditText
             android:background="@android:color/transparent"
             android:id="@+id/viewEntryOverviewMeaningsContent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintBaseline_toBaselineOf="@id/viewEntryOverviewMeaningsLabel"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewShowHiddenMeaningsButton"
             app:layout_constraintRight_toRightOf="parent"
             android:enabled="false"
             android:focusable="false"
             android:text="placeholder4"
+            android:visibility="gone"
             android:textColor="@color/secondaryTextColor" />
 
         <EditText
@@ -198,19 +201,31 @@
             android:focusable="false"
             android:text=""
             android:textColor="@color/secondaryTextColor" />
-        
-         <!-- TODO: add tags content -->
 
-         <android.support.v7.widget.RecyclerView
-             android:id="@+id/viewEntryOverviewSharedRecyclerView"
-             android:layout_width="0dp"
-             android:layout_height="0dp"
-             android:padding="10dp"
-             app:layout_constraintLeft_toLeftOf="parent"
-             app:layout_constraintRight_toRightOf="parent"
-             app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewSharedLabel"
-             app:layout_constraintBottom_toBottomOf="parent" /> 
-        
+        <!-- TODO: add tags content -->
+
+        <!-- List of shared kanji -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/viewEntryOverviewSharedRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewSharedLabel"
+            app:layout_constraintBottom_toBottomOf="parent" /> 
+
+        <!-- buttons -->
+        <Button
+            android:foreground="?android:attr/selectableItemBackground"
+            android:id="@+id/viewEntryOverviewShowHiddenMeaningsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/viewEntryOverviewMeaningsLabel"
+            android:text="placeholder4"
+            android:textColor="@color/secondaryTextColor" />
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

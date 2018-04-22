@@ -18,9 +18,14 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.DividerItemDecoration;
+import android.os.Handler;
+import android.widget.Button;
+import android.support.constraint.ConstraintSet;
+import android.support.constraint.ConstraintLayout;
 
 import android.util.Log;
 
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -29,20 +34,26 @@ import com.github.winterweird.jpractice.ViewEntryActivity;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.Entry;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
+import com.github.winterweird.jpractice.japanese.JishoAPIHelper;
 import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter;
 import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter.KanjiWordPair;
 
 public class ViewEntryPageFragmentOverview extends Fragment {
     private String kanji;
     private String reading;
+    private String meanings;
     private int listname;
     private int position;
     private int tier;
+    private int nMeanings;
+    private boolean showMeanings = false;
 
     private EditText kanjiContent;
     private EditText readingContent;
     private EditText meaningsContent;
     private EditText listContent;
+    private Button meaningsButton;
+    private ConstraintLayout constraintLayout;
 
     private View nextButton;
     private View prevButton;
@@ -51,6 +62,8 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         this.kanji = kanji;
         this.listname = listname;
     }
+    
+    private Handler handler = new Handler();
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,10 +77,12 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         View view = inflater.inflate(R.layout.view_entry_page_overview, container, false);
         if (this.kanji == null) return view;
 
-        kanjiContent    = view.findViewById(R.id.viewEntryOverviewKanjiContent);
-        readingContent  = view.findViewById(R.id.viewEntryOverviewReadingContent);
-        meaningsContent = view.findViewById(R.id.viewEntryOverviewMeaningsContent);
-        listContent     = view.findViewById(R.id.viewEntryOverviewListContent);
+        kanjiContent     = view.findViewById(R.id.viewEntryOverviewKanjiContent);
+        readingContent   = view.findViewById(R.id.viewEntryOverviewReadingContent);
+        meaningsContent  = view.findViewById(R.id.viewEntryOverviewMeaningsContent);
+        meaningsButton   = view.findViewById(R.id.viewEntryOverviewShowHiddenMeaningsButton);
+        listContent      = view.findViewById(R.id.viewEntryOverviewListContent);
+        constraintLayout = view.findViewById(R.id.viewEntryOverviewConstraintLayout);
 
         setEditable(kanjiContent, false);
         setEditable(readingContent, false);
@@ -153,8 +168,43 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         kanjiContent.setText(this.kanji);
         readingContent.setText(this.reading);
         listContent.setText(lname);
-        // TODO: set meanings text
+        JishoAPIHelper.getBestMatch(this.kanji, this.reading, match -> {
+            if (match != null) {
+                nMeanings = match.meanings.size();
+                String s = match.meanings.stream()
+                    .map(l -> "- " + l.stream().collect(Collectors.joining(", ")))
+                    .collect(Collectors.joining("\n"));
+                handler.post(() -> {
+                    meaningsContent.setText(s);
+                    setMeaningsVisibility(showMeanings);
+                });
+            }
+        });
+        meaningsButton.setOnClickListener(v -> setMeaningsVisibility(!showMeanings));
         return view;
+    }
+
+    private void setMeaningsVisibility(boolean visible) {
+        // determine plurality of word "meaning"
+        String plurality = String.format("meaning%s", nMeanings != 1 ? "s" : "");
+        meaningsButton.setText(visible ? String.format("Hide %s", plurality)
+                                       : String.format("Show %d %s", nMeanings, plurality));
+        
+        // set visibility of meanings
+        meaningsContent.setVisibility(visible ? View.VISIBLE : View.GONE);
+
+        // set the constraints of the label below
+        
+        int bottomOf = visible ? R.id.viewEntryOverviewMeaningsContent
+                               : R.id.viewEntryOverviewShowHiddenMeaningsButton;
+        
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(R.id.viewEntryOverviewTagsLabel, ConstraintSet.TOP,
+                bottomOf, ConstraintSet.BOTTOM, 0);
+        constraintSet.applyTo(constraintLayout);
+        
+        showMeanings = visible;
     }
 
     public void reset() {
