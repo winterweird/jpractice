@@ -262,18 +262,10 @@ public class ViewEntryPageFragmentOverview extends Fragment {
     }
 
     public void setEditable(boolean editable) {
-        if (kanjiContent == null
-                || readingContent == null
-                || nextButton == null
-                || prevButton == null) {
-            handler.postDelayed(() -> setEditable(editable), 100);
-        }
-        else {
-            setEditable(kanjiContent, editable);
-            setEditable(readingContent, editable);
-            nextButton.setClickable(!editable);
-            prevButton.setClickable(!editable);
-        }
+        setEditable(kanjiContent, editable);
+        setEditable(readingContent, editable);
+        nextButton.setClickable(!editable);
+        prevButton.setClickable(!editable);
     }
 
     private void setEditable(EditText et, boolean editable) {

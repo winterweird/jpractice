@@ -10,6 +10,8 @@ import android.view.View;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
+import android.os.Handler;
 
 import android.util.Log;
 
@@ -26,6 +28,8 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
     private FloatingActionButton editfab;
     private FloatingActionButton savefab;
     private FloatingActionButton cancelfab;
+    
+    private Handler handler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,6 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
         editfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
                 setEditMode(true);
             }
         });
@@ -62,7 +65,7 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
         cancelfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
+                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview) getFragment(0);
                 f1.reset();
                 setEditMode(false);
             }
@@ -72,7 +75,7 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
         savefab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
+                ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview) getFragment(0);
                 boolean continueEditMode = f1.commit();
                 setEditMode(continueEditMode);
             }
@@ -112,7 +115,15 @@ public class ViewEntryActivity extends ToolbarBackButtonActivity {
             cancelfab.setVisibility(View.GONE);
         }
         
-        ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview)adapter.getItem(0);
-        f1.setEditable(active);
+        ViewEntryPageFragmentOverview f1 = (ViewEntryPageFragmentOverview) getFragment(0);
+        if (f1 != null)
+            f1.setEditable(active);
+        else
+            handler.postDelayed(() -> setEditMode(active), 100);
+    }
+
+    private Fragment getFragment(int index) {
+        return getSupportFragmentManager()
+            .findFragmentByTag("android:switcher:" + R.id.activity_main_layout + ":" + index);
     }
 }
