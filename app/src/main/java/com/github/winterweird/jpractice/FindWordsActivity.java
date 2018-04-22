@@ -26,7 +26,7 @@ import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.database.Cursor;
-
+import android.util.Log;
 // own classes
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
@@ -37,6 +37,8 @@ import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
 // Java API
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class FindWordsActivity extends ToolbarBackButtonActivity
             implements ViewportWidthAdjustmentDialog.ViewportWidthAdjustmentDialogListener {
@@ -46,7 +48,8 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
     private int DESIRED_PAGE_WIDTH; // TODO: make this not caps
     private WebView webview;
     private SharedPreferences.Editor edit;
-    
+    private List<String> searchTerms;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +60,8 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
                 Context.MODE_PRIVATE);
         edit = prefs.edit();
         Resources res = getResources();
-        
+
+        searchTerms = loadSearchTerms();
 
         MIN_PAGE_WIDTH = res.getInteger(R.integer.viewportWidthSeekBarMin);
         MAX_PAGE_WIDTH = MIN_PAGE_WIDTH + res.getInteger(R.integer.viewportWidthSeekBarRange);
@@ -82,6 +86,14 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
             @Override
             public void onPageFinished(WebView view, String url) {
                 updateViewportWidth();
+                String searchTerm = extractSearchTerm(url);
+                if (!searchTerm.contains("/")) { // we assume that we have the right word
+                    // TODO: check if we are rewinding to an earlier point in
+                    // history, and if so, handle.
+                    if (searchTerms.isEmpty() || !searchTerms.get(searchTerms.size()-1).equals(searchTerm)) {
+                        searchTerms.add(searchTerm);
+                    }
+                }
                 super.onPageFinished(view, url);
             }
         });
@@ -129,6 +141,21 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
         updateViewportWidth();
     }
 
+    private List<String> loadSearchTerms() {
+        // For the time being, just create a new history.
+        // TODO: use together with database
+        return new ArrayList<>();
+    }
+
+    private String extractSearchTerm(String url) {
+        try {
+            return java.net.URLDecoder.decode(url.replaceAll(".*/search/", ""), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.e("Test", "Error: " + e.getMessage());
+            return null;
+        }
+    }
+
     private void updateViewportWidth() {
         final String jsCode = "document.getElementsByName('viewport')[0]" +
                 ".setAttribute('content', 'width=" + DESIRED_PAGE_WIDTH + "');";
@@ -150,6 +177,12 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.findActionViewSearchHistory:
+                Log.d("Test", "View search history action clicked");
+                for (String term : searchTerms) {
+                    Log.d("Test", "term: " + term);
+                }
+                return true;
             case R.id.findActionOpenWidthDialog:
                 showViewportWidthAdjustmentDialog();
                 return true;

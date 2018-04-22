@@ -17,6 +17,7 @@
 
     <string name="findActionOpenWidthDialog">Adjust webview viewport width</string>
     <string name="findActionOpenCreateEntryDialog">Add database entry</string>
+    <string name="findActionViewSearchHistory">View search history</string>
 
     <string name="listsActionCreateNewList">Create new list</string>
 

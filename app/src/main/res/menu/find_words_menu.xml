@@ -1,15 +1,22 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/findActionViewSearchHistory"
+        android:title="@string/findActionViewSearchHistory"
+        android:icon="@drawable/ic_history_white_24dp"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/findActionOpenCreateNewListDialog"
         android:title="@string/listsActionCreateNewList"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/findActionOpenCreateEntryDialog"
         android:title="@string/findActionOpenCreateEntryDialog"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
     <item
         android:id="@+id/findActionOpenWidthDialog"
         android:title="@string/findActionOpenWidthDialog"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
 </menu>
 
