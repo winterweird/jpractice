@@ -43,6 +43,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Activity for discovering new words to add to your lists.
+ *
+ * This is chiefly a wrapper for a WebView pointing to Jisho.org.
+ */
 public class FindWordsActivity extends ToolbarBackButtonActivity
             implements ViewportWidthAdjustmentDialog.ViewportWidthAdjustmentDialogListener {
             
@@ -53,6 +58,11 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
     private SharedPreferences.Editor edit;
     private List<String> searchTerms;
 
+    /**
+     * Called when the activity is created.
+     *
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +107,7 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
                 // Redirect to deprecated method, so you can use it in all SDK versions
                 onReceivedError(view, rerr.getErrorCode(),
                         rerr.getDescription().toString(), req.getUrl().toString());
-} 
+            } 
             @Override
             public void onPageFinished(WebView view, String url) {
                 updateViewportWidth();
@@ -128,11 +138,23 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
             }
     }
 
+    /**
+     * Displays the viewport width adjustment dialog.
+     *
+     * Passes along the arguments MIN_PAGE_WIDTH, MAX_PAGE_WIDTH and
+     * DESIRED_PAGE_WIDTH.
+     */
     public void showViewportWidthAdjustmentDialog() {
         DialogFragment dialog = new ViewportWidthAdjustmentDialog(MIN_PAGE_WIDTH, MAX_PAGE_WIDTH, DESIRED_PAGE_WIDTH);
         dialog.show(getSupportFragmentManager(), "ViewportWidthAdjustmentDialog");
     }
 
+    /**
+     * Displays the dialog for entry creation.
+     *
+     * Checks if you have any lists created in the database first, and if there
+     * aren't any, displays a toast informing you of this instead.
+     */
     public void showCreateEntryDialog() {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
         int count = dbhelper.getLists().size();
@@ -146,22 +168,50 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
         }
     }
 
+    /**
+     * Displays the dialog for new list creation.
+     */
     public void showCreateNewListDialog() {
         DialogFragment dialog = new CreateNewListDialog();
         dialog.show(getSupportFragmentManager(), "CreateNewListDialog");
     }
 
+    /**
+     * Set the width of the viewport to the given value.
+     *
+     * @param value The new viewport width value
+     */
     public void changeViewportWidth(int value) {
         DESIRED_PAGE_WIDTH = value;
         updateViewportWidth();
     }
 
+    /**
+     * Load search term history.
+     *
+     * NOTE: Currently does not store history in the database.
+     *
+     * @return An empty list for now
+     */
     private List<String> loadSearchTerms() {
         // For the time being, just create a new history.
         // TODO: use together with database
         return new ArrayList<>();
     }
 
+    /**
+     * Extract the search term from the given URL.
+     *
+     * Assumes that the search term is of the form:
+     * "https://wwww.jisho.org/search/&lt;search term&gt;"
+     *
+     * Will extract the search term which is encoded using the URL encoding
+     * algorithm and decode it to UTF-8.
+     *
+     * @param url The URL to extract the search term from
+     *
+     * @return The search term in the URL.
+     */
     private String extractSearchTerm(String url) {
         try {
             return java.net.URLDecoder.decode(url.replaceAll(".*/search/", ""), "UTF-8");
@@ -171,6 +221,12 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
         }
     }
 
+    /**
+     * Perform the actions required to actually update the viewport width.
+     * 
+     * This includes evaluating the javascript for updating the in-HTML viewport
+     * value.
+     */
     private void updateViewportWidth() {
         final String jsCode = "document.getElementsByName('viewport')[0]" +
                 ".setAttribute('content', 'width=" + DESIRED_PAGE_WIDTH + "');";
@@ -178,17 +234,40 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
         webview.setInitialScale(1);
     }
 
+    /**
+     * Implementation of the slider adjustment callback of the
+     * ViewportWidthAdjustmentDialog.
+     *
+     * @param dialog The dialog fragment that fired the event
+     * @param progressValue The new value of the slider
+     */
     @Override
     public void onSliderAdjustment(DialogFragment dialog, int progressValue) {
         changeViewportWidth(progressValue);
     }
 
+    /**
+     * Implementation of the dialog dismissal callback of the
+     * ViewportWidthAdjustmentDialog.
+     *
+     * @param dialog The dialog fragment that fired the event
+     */
     @Override
     public void onDialogDismiss(DialogFragment dialog) {
         edit.putInt(getString(R.string.preferencesViewportWidth), DESIRED_PAGE_WIDTH);
         edit.commit();
     }
 
+    /**
+     * Defines the actions to be done when a menu item is selected.
+     *
+     * Menu items with defined actions: Showing dialogs of viewport width
+     * adjustment, entry creation and list creation.
+     *
+     * @param item The selected menu item
+     * @return true if the event should be consumed or false if it should be
+     * further processed
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -214,6 +293,13 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
         }
     }
 
+    /**
+     * Defines what actions need to be taken when the menu is created.
+     *
+     * Inflates the menu using R.menu.find_words_menu
+     *
+     * @param menu The menu that was created
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.find_words_menu, menu);
