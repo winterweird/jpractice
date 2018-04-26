@@ -7,4 +7,8 @@
         android:title="@string/listsActionCreateNewList"
         android:icon="@drawable/ic_add_circle_outline_white_24dp"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/listsActionExportListsAsCSV"
+        android:title="@string/listsActionExportListsAsCSV"
+        app:showAsAction="never" />
 </menu>

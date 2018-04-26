@@ -20,6 +20,9 @@
     <string name="findActionViewSearchHistory">View search history</string>
 
     <string name="listsActionCreateNewList">Create new list</string>
+    <string name="listsActionExportListsAsCSV">Export all lists as CSV</string>
+    
+    <string name="listExportChooserTitle">Export lists to...</string>
 
     <string name="viewListActionFilterWords">Filter words</string>
     <string name="viewListActionDeleteList">Delete list</string>

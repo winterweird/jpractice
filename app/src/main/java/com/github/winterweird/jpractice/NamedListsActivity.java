@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice;
 
+import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.DialogFragment;
@@ -24,6 +25,8 @@ import android.content.Intent;
 import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 
+import android.util.Log;
+
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
@@ -31,6 +34,7 @@ import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
 import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class NamedListsActivity extends ToolbarBackButtonActivity {
     private RecyclerView recyclerView;
@@ -76,6 +80,9 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
             case R.id.listsActionCreateNewList:
                 showCreateNewListDialog();
                 return true;
+            case R.id.listsActionExportListsAsCSV:
+                exportListsAsCSV();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -87,6 +94,37 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.named_lists_menu, menu);
         return true;
+    }
+
+    public void exportListsAsCSV() {
+        DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
+
+        // Put in separate thread to avoid making the UI hang
+        new Thread(() -> {
+            // get all lists as array of string
+            ArrayList<List> lists = dbhelper.getLists();
+            String[] listStrings = new String[lists.size()];
+            lists.stream().map(l -> l.toString()).collect(Collectors.toList()).toArray(listStrings);
+            
+            String csv = dbhelper.createEntryCSVText(listStrings);
+            
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, csv);
+            intent.setType("text/plain");
+            
+        // Put in separate thread to avoid making the UI hang
+            String title = getResources().getString(R.string.listExportChooserTitle);
+            Intent chooser = Intent.createChooser(intent, title);
+
+            // Verify the intent will resolve to at least one activity
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }
+            else {
+                Toast.makeText(this, "Error: could not export to any application", 
+                        Toast.LENGTH_LONG).show();
+            }
+        }).start();
     }
 
     public void showCreateNewListDialog() {

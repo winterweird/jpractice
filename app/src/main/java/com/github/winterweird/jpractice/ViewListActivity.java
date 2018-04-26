@@ -239,11 +239,27 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
 
     public void exportListAsCSV() {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, dbhelper.createEntryCSVText(new String[]{listName}));
-        intent.setType("text/plain");
-        startActivity(intent);
+        
+        // Put in separate thread to avoid making the UI hang
+        new Thread(() -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setAction(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, dbhelper.createEntryCSVText(new String[]{listName}));
+            intent.setType("text/plain");
+
+            // create a chooser every time
+            String title = getResources().getString(R.string.listExportChooserTitle);
+            Intent chooser = Intent.createChooser(intent, title);
+            
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            }
+            else {
+                Toast.makeText(this, "Error: could not export to any application", 
+                        Toast.LENGTH_LONG).show();
+            }
+
+        }).start();
     }
 
     public void deleteList() {
