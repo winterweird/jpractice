@@ -112,7 +112,7 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
             intent.putExtra(Intent.EXTRA_TEXT, csv);
             intent.setType("text/plain");
             
-        // Put in separate thread to avoid making the UI hang
+            // create a chooser every time
             String title = getResources().getString(R.string.listExportChooserTitle);
             Intent chooser = Intent.createChooser(intent, title);
 
