@@ -31,6 +31,7 @@ import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.database.FeedReaderContract;
 import com.github.winterweird.jpractice.dialogs.CreateNewListDialog;
+import com.github.winterweird.jpractice.dialogs.AddFromCSVDialog;
 import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
 
 import java.util.ArrayList;
@@ -83,6 +84,9 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
             case R.id.listsActionExportListsAsCSV:
                 exportListsAsCSV();
                 return true;
+            case R.id.listsActionAddFromCSV:
+                showAddFromCSVDialog();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -125,6 +129,11 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
                         Toast.LENGTH_LONG).show();
             }
         }).start();
+    }
+
+    public void showAddFromCSVDialog() {
+        DialogFragment dialog = new AddFromCSVDialog();
+        dialog.show(getSupportFragmentManager(), "AddFromCSVDialog");
     }
 
     public void showCreateNewListDialog() {

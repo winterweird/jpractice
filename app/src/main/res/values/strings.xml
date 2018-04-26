@@ -21,6 +21,7 @@
 
     <string name="listsActionCreateNewList">Create new list</string>
     <string name="listsActionExportListsAsCSV">Export all lists as CSV</string>
+    <string name="listsActionAddFromCSV">Add data from CSV</string>
     
     <string name="listExportChooserTitle">Export lists to...</string>
 

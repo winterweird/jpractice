@@ -11,4 +11,8 @@
         android:id="@+id/listsActionExportListsAsCSV"
         android:title="@string/listsActionExportListsAsCSV"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/listsActionAddFromCSV"
+        android:title="@string/listsActionAddFromCSV"
+        app:showAsAction="never" />
 </menu>
