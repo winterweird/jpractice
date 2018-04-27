@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 
+import com.github.winterweird.jpractice.util.FilePicker;
+
 // for debug purposes
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.Entry;
@@ -34,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         
         Toolbar toolbar = (Toolbar)findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
+        
+        // ensure there is a FilePicker instance that won't be garbage collected
+        FilePicker.getInstance(this);
 
         Button practiceBtn = (Button)findViewById(R.id.mainButtonPractice);
         Button listBtn = (Button)findViewById(R.id.mainButtonList);

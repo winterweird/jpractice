@@ -5,6 +5,8 @@
       android:versionName="1.0">
 
       <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    
       <uses-sdk
           android:minSdkVersion="14"
           android:targetSdkVersion="23" />
@@ -28,5 +30,6 @@
             android:label="@string/findWordsActivity" />
         <activity android:name="ViewListActivity" />
         <activity android:name="ViewEntryActivity" />
+        <activity android:name="com.github.winterweird.jpractice.util.FilePickerActivity" />
     </application>
 </manifest>

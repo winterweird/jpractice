@@ -1,5 +1,8 @@
 package com.github.winterweird.jpractice.dialogs;
 
+import android.content.ContentResolver;
+import android.os.Handler;
+import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +15,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.Toast;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.net.Uri;
+
+import java.io.IOException;
+import java.io.File;
 
 import com.github.winterweird.jpractice.R;
+import com.github.winterweird.jpractice.util.FilePicker;
+import com.github.winterweird.jpractice.util.FileUtils;
 import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
@@ -24,6 +38,9 @@ public class AddFromCSVDialog extends DialogFragment {
     private String cancelText = "Cancel";
     private boolean pasteMode = true;
     private Callback callback;
+    private Uri uri;
+    private EditText pathSelection;
+    private Handler handler = new Handler();
 
     public AddFromCSVDialog(Callback callback) {
         this.callback = callback;
@@ -37,7 +54,7 @@ public class AddFromCSVDialog extends DialogFragment {
         final View v = inflater.inflate(R.layout.add_from_csv_dialog, null);
         
         // View children
-        final EditText pathSelection = v.findViewById(R.id.addFromCSVPathSelection);
+        pathSelection = v.findViewById(R.id.addFromCSVPathSelection);
         final EditText pasteBox = v.findViewById(R.id.addFromCSVPasteBox);
         final Button changeMode = v.findViewById(R.id.addFromCSVChangeModeButton);
         changeMode.setOnClickListener(view -> {
@@ -55,6 +72,9 @@ public class AddFromCSVDialog extends DialogFragment {
                 pathSelection.setVisibility(View.VISIBLE);
             }
         });
+
+        pathSelection.setOnClickListener(view ->
+                FilePicker.getInstance().findFile(s -> selectPath(s)));
         
         return new AlertDialog.Builder(act, R.style.AlertDialogTheme)
             .setTitle(title)
@@ -63,25 +83,49 @@ public class AddFromCSVDialog extends DialogFragment {
                 String s;
                 if (pasteMode) {
                     s = pasteBox.getText().toString();
+                    if (s.replaceAll("\\s+", "").isEmpty()) {
+                        s = null;
+                    }
                 }
                 else {
-                    s = pathSelection.getText().toString();
-                    throw new IllegalStateException("Path selection not implemented");
+                    try {
+                        ContentResolver resolver = act.getContentResolver();
+                        s = FileUtils.getContents(resolver.openInputStream(uri));
+                        Log.d("Test", s);
+                    } catch (IOException e) {
+                        Log.e("Test", e.getMessage());
+                        s = null;
+                    }
                 }
                 
-                DatabaseHelper dbhelper = DatabaseHelper.getHelper(act);
-                DatabaseHelper.DbUpdateResult res = dbhelper.insertFromCSVText(s);
-                
-                callback.callback(res);
+                if (s == null) {
+                    Toast.makeText(act, "Couldn't add data: invalid resource",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                Toast.makeText(act, res.toString(), Toast.LENGTH_LONG).show();
+                final String csvText = s;
+                
+                final Context appctx = act.getApplicationContext();
+                Toast.makeText(appctx, "Adding entries to database...", Toast.LENGTH_LONG).show();
+                new Thread (() -> {
+                    DatabaseHelper dbhelper = DatabaseHelper.getHelper(appctx);
+                    DatabaseHelper.DbUpdateResult res = dbhelper.insertFromCSVText(csvText);
+                    
+                    callback.callback(res);
+
+                    handler.post(() -> {
+                        Toast.makeText(appctx, res.toString(), Toast.LENGTH_LONG).show();
+                    });
+                }).start();
             })
             .setNegativeButton(cancelText, (dialog, id) -> {})
             .create();
     }
 
-    public void addDataToDatabase() {
-        Log.d("Test", "confirm button clicked");
+    private void selectPath(Uri uri) {
+        this.uri = uri;
+        this.pathSelection.setText(uri.getPath());
     }
 
     /**
@@ -89,6 +133,5 @@ public class AddFromCSVDialog extends DialogFragment {
      */
     public static interface Callback {
         void callback(DatabaseHelper.DbUpdateResult res);
-        
     }
 }

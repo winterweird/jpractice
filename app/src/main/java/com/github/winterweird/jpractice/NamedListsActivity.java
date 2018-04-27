@@ -85,21 +85,6 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
                 exportListsAsCSV();
                 return true;
             case R.id.listsActionAddFromCSV:
-//                DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
-//                DatabaseHelper.DbUpdateResult res = dbhelper.insertFromCSVText(
-//                        "かぐや1,告白,こくはく,0,5\n"+
-//                        "Test,告白,こくはく,0,cats\n"+
-//                        "Test,世界,せかい,0,5");
-//                Log.d("Test", res.toString());
-//                Log.d("Test", res.errorsToString());
-//                Log.d("Test", res.successesToString());
-//                for (List l : res.createdLists()) {
-//                    adapter.insertItem(l);
-//                }
-//                for (DatabaseHelper.DbUpdateResult.Error e : res.errors) {
-//                    Log.d("Test", e.longMsg +
-//                            "\n---------------------------------------------------------------\n");
-//                }
                 showAddFromCSVDialog();
                 return true;
             default:
