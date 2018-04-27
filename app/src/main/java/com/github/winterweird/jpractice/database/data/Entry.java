@@ -75,4 +75,9 @@ public class Entry implements DatabaseEntryInterface {
     public int hashCode() {
         return Objects.hash(new Integer(this.listname), this.kanji);
     }
+
+    @Override
+    public int id() {
+        return -1;
+    }
 }

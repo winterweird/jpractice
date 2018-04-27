@@ -42,4 +42,9 @@ public class TaggedWord implements DatabaseEntryInterface {
     public int hashCode() {
         return Objects.hash(new Integer(this.tag), new Integer(this.kanjiID));
     }
+
+    @Override
+    public int id() {
+        return -1;
+    }
 }

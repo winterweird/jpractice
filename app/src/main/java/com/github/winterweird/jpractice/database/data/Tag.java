@@ -33,4 +33,9 @@ public class Tag implements DatabaseEntryInterface {
     public int hashCode() {
         return this.tag.hashCode();
     }
+
+    @Override
+    public int id() {
+        return -1;
+    }
 }

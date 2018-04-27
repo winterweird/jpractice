@@ -48,4 +48,9 @@ public class Preset implements DatabaseEntryInterface {
     public int hashCode() {
         return new Integer(this.id).hashCode(); // bcz I'm lazy
     }
+
+    @Override
+    public int id() {
+        return -1;
+    }
 }

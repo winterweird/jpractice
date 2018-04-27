@@ -5,9 +5,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import android.util.Log;
 
@@ -22,6 +24,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static synchronized DatabaseHelper getHelper(Context context) {
         if (helper == null)
             helper = new DatabaseHelper(context);
+        return helper;
+    }
+
+    public static synchronized DatabaseHelper getHelper() {
+        if (helper == null)
+            throw new IllegalStateException("DatabaseHelper context not set");
         return helper;
     }
     
@@ -457,6 +465,153 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Create database entries based on CSV text.
+     * 
+     * Makes assumptions about the format of the CSV, and gracefully returns
+     * error messages if its assumptions aren't met. Examples of assumptions:
+     * - There needs to be exactly n fields in each CSV record, and comma can be
+     *   part of none of the fields
+     * - Every CSV record is on its own separate line, and every line is a CSV
+     *   record
+     * - Every field is in its expected position in the CSV
+     *   - Format of record: listname,word,reading,position_in_list,tier
+     *
+     * Tries to operate individually on each line, and to insert the required
+     * values, and records an error message on every failure. Returns a result
+     * containing the general status of the operation, as well as error messages
+     * for any operations that failed, or any criteria that weren't met. If an
+     * operation produces an error, none of the changes should actually be
+     * performed on the database.
+     *
+     * @param csv A newline-separated list of CSV records representing the data
+     *
+     * @return A DbUpdateResult object describing the result
+     */
+    public DbUpdateResult insertFromCSVText(String csv) {
+        DbUpdateResult res = new DbUpdateResult();
+
+        int FIELDS_PER_RECORD = 5;
+        
+        SQLiteDatabase db = getWritableDatabase();
+        String[] lines = csv.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String ln = lines[i];
+            String[] fields = ln.split(",");
+
+            DbUpdateResult.Success successRec = new DbUpdateResult.Success(ln, i);
+
+            // check that record has correct number of fields
+            if (fields.length != 5) {
+                String shortMsg = String.format("Wrong field number (%d)", fields.length);
+                String longMsg = String.format("FORMAT ERROR - %s:%d: number of fields must be %d but was %d", 
+                        ln, i, FIELDS_PER_RECORD, fields.length);
+                res.errors.add(new DbUpdateResult.Error(ln, i, shortMsg, longMsg));
+                continue;
+            }
+
+            // try to execute the required changes
+            db.beginTransaction();
+            try {
+                List l = new List(fields[0]);
+                int listId = l.id();
+                
+                if (listId == -1) { // create a new list
+                    insert(l);
+                    listId = l.id(); // update the id
+                    successRec.add(String.format("List %s (%d) created", l.getListname(), listId));
+                    successRec.createdList = l;
+                }
+                
+                Entry e = new Entry(
+                        listId,
+                        fields[1],
+                        fields[2],
+                        Integer.parseInt(fields[3]),
+                        Integer.parseInt(fields[4]));
+                insert(e);
+
+                db.setTransactionSuccessful();
+                successRec.add(String.format("Word %s (%s) inserted",
+                            e.getKanji(), e.getReading()));
+                res.successes.add(successRec);
+            } catch (SQLiteException e) {
+                String shortMsg = "SQLite insertion error";
+                String longMsg = e.getMessage();
+                res.errors.add(new DbUpdateResult.Error(ln, i, shortMsg, longMsg));
+            } catch (NumberFormatException e) {
+                String shortMsg = "Integer parsing error";
+                String longMsg = String.format("%s:%d: Failure to parse integer %s", ln, i, e.getMessage());
+                res.errors.add(new DbUpdateResult.Error(ln, i, shortMsg, longMsg));
+            } finally {
+                db.endTransaction();
+            }
+        }
+        return res;
+    }
+
+    /**
+     * A record containing aggregate result info as well as individual errors.
+     *
+     * Should be easy to query.
+     */
+    public static class DbUpdateResult {
+        public ArrayList<Error> errors = new ArrayList<>();
+        public ArrayList<Success> successes = new ArrayList<>();
+        public static class Error {
+            public String line;
+            public int lineNo;
+            public String shortMsg;
+            public String longMsg;
+            public Error(String ln, int lnNo, String s, String l) {
+                line = ln; lineNo = lnNo; shortMsg = s; longMsg = l;
+            }
+            public String toString() {
+                return String.format("Error:%s:%d: %s", line, lineNo, shortMsg);
+            }
+        }
+        public static class Success {
+            public String line;
+            public int lineNo;
+            public ArrayList<String> actions = new ArrayList<>();
+            public List createdList = null;
+            public Success(String ln, int lnNo) {
+                line = ln; lineNo = lnNo;
+            }
+            public String toString() {
+                return String.format("Success:%s:%d: %s", line, lineNo,
+                        actions.stream().collect(Collectors.joining("; ")));
+            }
+
+            public void add(String action) {
+                actions.add(action);
+            }
+        }
+        
+        public ArrayList<List> createdLists() {
+            return new ArrayList<>(successes.stream()
+                .filter(s -> s.createdList != null)
+                .map(s -> s.createdList)
+                .collect(Collectors.toList()));
+        }
+        
+        
+        public String errorsToString() {
+            return errors.stream()
+                .map(e -> e.toString())
+                .collect(Collectors.joining("\n"));
+        }
+        public String successesToString() {
+            return successes.stream()
+                .map(s -> s.toString())
+                .collect(Collectors.joining("\n"));
+        }
+        public String toString() {
+            return String.format("Database operation completed with %d errors and %d successes",
+                    errors.size(), successes.size());
+        }
+    }
+
+    /**
      * Get id of a given data entry.
      *
      * TODO: Update with overload for each of the different
@@ -491,6 +646,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 throw new IllegalArgumentException("No single column uniquely identifies " + table);
             default:
                 throw new IllegalArgumentException("Unknown table name: " + table);
+        }
+        return id;
+    }
+
+    public int idOf(List l) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + FeedReaderContract.FeedLists._ID + " FROM "
+                + FeedReaderContract.FeedLists.TABLE_NAME + " WHERE "
+                + FeedReaderContract.FeedLists.COLUMN_NAME_LISTNAME + " = ?",
+                new String[]{l.getListname()});
+        
+        int id = -1;
+        try {
+            cursor.moveToFirst();
+            if (!cursor.isAfterLast())
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(FeedReaderContract.FeedLists._ID));
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
         }
         return id;
     }

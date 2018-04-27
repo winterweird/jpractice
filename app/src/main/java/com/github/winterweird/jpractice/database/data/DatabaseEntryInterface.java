@@ -4,4 +4,5 @@ import android.content.ContentValues;
 
 public interface DatabaseEntryInterface {
     ContentValues getContentValues();
+    int id();
 }

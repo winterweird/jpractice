@@ -3,6 +3,7 @@ package com.github.winterweird.jpractice.database.data;
 import android.content.ContentValues;
 
 import com.github.winterweird.jpractice.database.FeedReaderContract;
+import com.github.winterweird.jpractice.database.DatabaseHelper;
 
 public class List implements DatabaseEntryInterface {
     private String listname;
@@ -38,5 +39,10 @@ public class List implements DatabaseEntryInterface {
     @Override
     public int hashCode() {
         return listname.hashCode();
+    }
+
+    @Override
+    public int id() {
+        return DatabaseHelper.getHelper().idOf(this);
     }
 }
