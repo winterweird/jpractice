@@ -24,6 +24,12 @@
     <string name="listsActionAddFromCSV">Add data from CSV</string>
     
     <string name="listExportChooserTitle">Export lists to...</string>
+    
+    <string name="addFromCSVPasteBoxLabel">Direct CSV entry mode</string>
+    <string name="addFromCSVPasteBoxHint">Type or paste CSV here</string>
+    <string name="addFromCSVPathSelectionHint">Type or paste CSV here</string>
+    <string name="addFromCSVChangeModeToFileSelectionButtonText">... or change to CSV file selection mode</string>
+    <string name="addFromCSVChangeModeToPasteBoxButtonText">... or change to direct CSV entry mode</string>
 
     <string name="viewListActionFilterWords">Filter words</string>
     <string name="viewListActionDeleteList">Delete list</string>

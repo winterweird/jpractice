@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!-- TODO: create cabability to either specify a CSV file to read the data
+         from, or to paste the data directly into a text box. -->
+    
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hello world" />
+        android:paddingLeft="30dp"
+        android:text="@string/addFromCSVPasteBoxLabel" />
+    
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addFromCSVPasteBox"
+        android:visibility="visible"
+        android:hint="@string/addFromCSVPasteBoxHint"
+        android:textColor="@color/secondaryTextColor"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addFromCSVPathSelection"
+        android:visibility="gone"
+        android:hint="@string/addFromCSVPathSelectionHint"
+        android:textColor="@color/secondaryTextColor"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addFromCSVChangeModeButton"
+        android:text="@string/addFromCSVChangeModeToFileSelectionButtonText" />
 
 </LinearLayout>
