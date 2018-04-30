@@ -37,10 +37,25 @@ import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * Activity displaying a list of the lists the user has created.
+ *
+ * Clicking on one of the lists will take you to ViewListActivity, which
+ * displays the words in the list and their readings.
+ */
 public class NamedListsActivity extends ToolbarBackButtonActivity {
     private RecyclerView recyclerView;
     private NamedListsAdapter adapter;
     private NamedListsAdapter.OnItemClickListener listener;
+
+    /**
+     * Called when the activity is created.
+     *
+     * Set the layout, and defined the items, their style, and their onclick
+     * behavior, as well as the floating action button's behavior.
+     *
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,12 +84,24 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
         });
     }
 
+    /**
+     * Update list content on resume.
+     *
+     * Needs to be called because the list content may have changed since the
+     * items can be edited outside of this activity.
+     */
     @Override
     public void onResume() {
         super.onResume();
         getListContent();
     }
     
+    /**
+     * Define the actions performed when the user clicks a toolbar menu item.
+     *
+     * @param item The menu item clicked
+     * @return Whether the click was handled
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -94,13 +121,26 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
         }
     }
 
+    /**
+     * Inflate the menu.
+     *
+     * @param menu The menu to inflate the layout into
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.named_lists_menu, menu);
         return true;
     }
 
+    /**
+     * Export the entries in the database as plaintext in CSV format, displaying
+     * a chooser every time.
+     *
+     * Create a new thread to do this in.
+     */
     public void exportListsAsCSV() {
+        // TODO: use application context instead of this as the context
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
 
         // Put in separate thread to avoid making the UI hang
@@ -131,6 +171,14 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
         }).start();
     }
 
+    /**
+     * Display the dialog for adding from a CSV.
+     *
+     * Allows for either adding from a CSV file, or inserting the values to add
+     * in a text box.
+     *
+     * Updates the recyclerview with the newly added lists.
+     */
     public void showAddFromCSVDialog() {
         DialogFragment dialog = new AddFromCSVDialog(res -> {
             for (List l : res.createdLists()) {
@@ -140,11 +188,21 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
         dialog.show(getSupportFragmentManager(), "AddFromCSVDialog");
     }
 
+    /**
+     * Display the dialog for creating a new list.
+     *
+     * Updates the recyclerview with the newly added list.
+     */
     public void showCreateNewListDialog() {
         DialogFragment dialog = new CreateNewListAndRefreshDialog(adapter);
         dialog.show(getSupportFragmentManager(), "CreateNewListDialog");
     }
 
+    /**
+     * Custom class which refreshes the recyclerview content when closed.
+     *
+     * Inserts the added item, if there was an added item.
+     */
     public static class CreateNewListAndRefreshDialog extends CreateNewListDialog {
         private NamedListsAdapter adapter;
         public CreateNewListAndRefreshDialog(NamedListsAdapter adapter) {
@@ -160,6 +218,12 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
         }
     }
 
+    /**
+     * Helper method: refresh the contents of the recyclerview.
+     *
+     * If the adapter has not been created before, create a new adapter;
+     * otherwise, just set the content.
+     */
     public void getListContent() {
         DatabaseHelper dbhelper = DatabaseHelper.getHelper(this);
         ArrayList<List> lists = dbhelper.getLists();
