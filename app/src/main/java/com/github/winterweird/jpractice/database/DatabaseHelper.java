@@ -157,7 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String cnmPosition = FeedReaderContract.FeedEntries.COLUMN_NAME_POSITION;
         
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            int listname = cursor.getInt(cursor.getColumnIndexOrThrow("E.listname"));
+            int listname = cursor.getInt(cursor.getColumnIndexOrThrow(cnmListname));
             String kanji = cursor.getString(cursor.getColumnIndexOrThrow(cnmKanji));
             String reading = cursor.getString(cursor.getColumnIndexOrThrow(cnmReading));
             int tier = cursor.getInt(cursor.getColumnIndexOrThrow(cnmTier));

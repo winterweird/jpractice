@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import com.github.winterweird.jpractice.R;
@@ -59,6 +61,10 @@ public class SharedKanjiListAdapter
     public SharedKanjiListAdapter(Context context, ArrayList<KanjiWordPair> items) {
         this.context = context;
         this.items = items;
+        for (KanjiWordPair item: items) {
+            Log.d("Test", "Word: " + item.getWord().toString());
+            Log.d("Test", "Kanji: " + item.getKanji().toString());
+        }
     }
 
     @Override
@@ -70,6 +76,9 @@ public class SharedKanjiListAdapter
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         KanjiWordPair pair = items.get(position);
         Entry e = pair.getWord();
+        Log.d("Test", "Bind - word-kanji = " + e.getKanji());
+        Log.d("Test", "Bind - word-reading = " + e.getKanji());
+        Log.d("Test", "Bind - kanji = " + pair.getKanji());
         holder.kanji.setText(pair.getKanji());
         holder.word.setText(e.getKanji());
         holder.reading.setText(e.getReading());

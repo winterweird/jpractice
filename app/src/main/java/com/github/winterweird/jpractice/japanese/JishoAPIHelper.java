@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice.japanese;
 
+import java.io.BufferedInputStream;
 import javax.net.ssl.HttpsURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -16,6 +17,8 @@ import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * Helper class for the Jisho REST API.
@@ -69,14 +72,16 @@ public class JishoAPIHelper {
         // try creating the url
         try  {
             String file = "api/v1/search/words?keyword="  + URLEncoder.encode(kanji, "UTF-8");
-            url = new URL("http", "jisho.org", 80, file);
+            Log.d("Test", file);
+            url = new URL("https://jisho.org/" + file);
         } catch (Exception e) {
-            Log.e("Test", stacktraceAsString(e));
+            //throw new RuntimeException(e);
+            Log.e("Test", "Error: ", e);
             return null; // early return, won't be able to use the API anyways at this point
         }
         
         // try retrieving the result
-        try (InputStream is = url.openStream()) {
+        try (InputStream is = new BufferedInputStream(url.openStream())){
             JSONObject json = toJSON(is);
             JSONArray data = json.getJSONArray("data");
             int dataSize = data.length();
@@ -91,7 +96,7 @@ public class JishoAPIHelper {
                 }
             }
         } catch (Exception e) {
-            Log.e("Test", stacktraceAsString(e));
+            Log.e("Test", "Error: ", e);
         }
         
         return res;

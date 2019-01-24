@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice.fragments;
 
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities
 import com.github.winterweird.jpractice.japanese.JishoAPIHelper;
 import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter;
 import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter.KanjiWordPair;
+import com.github.winterweird.jpractice.util.ToastUtil;
 
 public class ViewEntryPageFragmentOverview extends Fragment {
     private String kanji;
@@ -141,8 +143,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
             @Override
             public void onClick(View v) {
                 if (position == 0) {
-                    Toast.makeText(act, "No previous list entry",
-                            Toast.LENGTH_LONG).show();
+                    ToastUtil.show(act, "No previous list entry");
                 }
                 else {
                     navigateToViewEntry(entries.get(position-1), R.anim.enter_left,
@@ -155,8 +156,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
             @Override
             public void onClick(View v) {
                 if (position == entries.size()-1) {
-                    Toast.makeText(act, "No next list entry",
-                            Toast.LENGTH_LONG).show();
+                    ToastUtil.show(act, "No next list entry");
                 }
                 else {
                     navigateToViewEntry(entries.get(position+1), R.anim.enter_right,
@@ -180,7 +180,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
                 });
             }
             else {
-                Toast.makeText(getContext(), "Error retrieving meanings", Toast.LENGTH_LONG).show();
+                ToastUtil.show(getContext(), "Error retrieving meanings");
             }
         });
         meaningsButton.setOnClickListener(v -> setMeaningsVisibility(!showMeanings));
@@ -221,23 +221,21 @@ public class ViewEntryPageFragmentOverview extends Fragment {
         
         String k = this.kanjiContent.getText().toString().replaceAll("\\s+", "");
         if (k.isEmpty()) {
-            Toast.makeText(getContext(), "Kanji cannot be empty", Toast.LENGTH_LONG).show();
+            ToastUtil.show(getContext(), "Kanji cannot be empty");
             continueEditMode = true;
         }
         else if (!JapaneseTextProcessingUtilities.isValidWordKanji(k)) {
-            Toast.makeText(getContext(), "Not a valid word: must contain only " +
-                    "Japanese characters and at least one kanji", Toast.LENGTH_LONG).show();
+            ToastUtil.show(getContext(), "Not a valid word: must contain only Japanese characters and at least one kanji");
             continueEditMode = true;
         }
         
         String r = this.readingContent.getText().toString().replaceAll("\\s+", "");
         if (r.isEmpty()) {
-            Toast.makeText(getContext(), "Reading cannot be empty", Toast.LENGTH_LONG).show();
+            ToastUtil.show(getContext(), "Reading cannot be empty");
             continueEditMode = true;
         }
         else if (!JapaneseTextProcessingUtilities.isValidWordReading(r)) {
-            Toast.makeText(getContext(), "Not a valid reading: must only contain kana",
-                    Toast.LENGTH_LONG).show();
+            ToastUtil.show(getContext(), "Not a valid reading: must only contain kana");
             continueEditMode = true;
         }
 
@@ -248,8 +246,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
             
             DatabaseHelper dbhelper = DatabaseHelper.getHelper(getContext());
             if (dbhelper.exists(newEntry) && !k.equals(this.kanji)) {
-                Toast.makeText(getContext(), "Kanji already exists in list",
-                        Toast.LENGTH_LONG).show();
+                ToastUtil.show(getContext(), "Kanji already exists in list");
                 continueEditMode = true;
             }
             else if (!k.equals(this.kanji) || !r.equals(this.reading)){
