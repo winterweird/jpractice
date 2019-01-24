@@ -10,7 +10,8 @@
     <ScrollView
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true" >
     <android.support.constraint.ConstraintLayout
         android:id="@+id/viewEntryOverviewConstraintLayout"
         android:layout_width="match_parent"
@@ -209,17 +210,26 @@
         <!-- TODO: add tags content -->
 
         <!-- List of shared kanji -->
-        <!-- NOTE: This might not work (test on next build), but the alternative is
-             to make the layout_height use wrap_content instead -->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/viewEntryOverviewSharedRecyclerView"
+        <!-- NOTE: Wrapped in a scrollview so that it doesn't get size 0 on rotate -->
+        <android.support.v4.widget.NestedScrollView 
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/viewEntryOverviewSharedRecyclerViewScrollViewWrapper"
             app:layout_constraintTop_toBottomOf="@id/viewEntryOverviewSharedLabel"
-            app:layout_constraintBottom_toBottomOf="@id/viewEntryPageOverviewLinearLayout" /> 
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" 
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_min="100dp"
+            app:layout_constraintHeight_default="spread" >
+            
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/viewEntryOverviewSharedRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" /> 
+        </android.support.v4.widget.NestedScrollView>
 
         <!-- buttons -->
         <Button
