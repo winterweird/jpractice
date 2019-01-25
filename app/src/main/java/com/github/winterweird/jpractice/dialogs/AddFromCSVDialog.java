@@ -89,6 +89,10 @@ public class AddFromCSVDialog extends DialogFragment {
                 }
                 else {
                     try {
+                        if (uri == null) {
+                            Toast.makeText(act, "No resource selected", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         ContentResolver resolver = act.getContentResolver();
                         s = FileUtils.getContents(resolver.openInputStream(uri));
                         Log.d("Test", s);
