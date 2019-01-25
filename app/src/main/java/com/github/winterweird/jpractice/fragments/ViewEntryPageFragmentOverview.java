@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter;
 import com.github.winterweird.jpractice.adapters.SharedKanjiListAdapter.KanjiWordPair;
 import com.github.winterweird.jpractice.util.ToastUtil;
 
+@SuppressLint("ValidFragment")
 public class ViewEntryPageFragmentOverview extends Fragment {
     private String kanji;
     private String reading;
@@ -60,6 +62,7 @@ public class ViewEntryPageFragmentOverview extends Fragment {
     private View nextButton;
     private View prevButton;
 
+    @SuppressLint("ValidFragment")
     public ViewEntryPageFragmentOverview(int listname, String kanji) {
         this.kanji = kanji;
         this.listname = listname;

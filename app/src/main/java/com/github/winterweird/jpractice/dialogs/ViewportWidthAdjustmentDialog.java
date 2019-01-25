@@ -15,9 +15,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.text.TextWatcher;
 import android.text.Editable;
+import android.annotation.SuppressLint;
 
 import com.github.winterweird.jpractice.R;
 
+@SuppressLint("ValidFragment")
 public class ViewportWidthAdjustmentDialog extends DialogFragment {
     public interface ViewportWidthAdjustmentDialogListener {
         public void onSliderAdjustment(DialogFragment dialog, int newValue);
@@ -29,6 +31,7 @@ public class ViewportWidthAdjustmentDialog extends DialogFragment {
     private int MIN_VALUE;
     private int MAX_VALUE;
 
+    @SuppressLint("ValidFragment")
     public ViewportWidthAdjustmentDialog(int min, int max, int progressValue) {
         MIN_VALUE = min;
         MAX_VALUE = max;

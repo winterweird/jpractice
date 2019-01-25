@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice.dialogs;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.os.Handler;
 import android.content.Context;
@@ -32,6 +33,7 @@ import com.github.winterweird.jpractice.database.DatabaseHelper;
 import com.github.winterweird.jpractice.database.data.List;
 import com.github.winterweird.jpractice.adapters.NamedListsAdapter;
 
+@SuppressLint("ValidFragment")
 public class AddFromCSVDialog extends DialogFragment {
     private String title = "Add data from CSV";
     private String confirmText = "Add data";
@@ -42,6 +44,7 @@ public class AddFromCSVDialog extends DialogFragment {
     private EditText pathSelection;
     private Handler handler = new Handler();
 
+    @SuppressLint("ValidFragment")
     public AddFromCSVDialog(Callback callback) {
         this.callback = callback;
     }

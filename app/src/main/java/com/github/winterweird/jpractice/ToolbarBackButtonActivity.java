@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 public class ToolbarBackButtonActivity extends AppCompatActivity {
     @Override
     public void onStart() {
+        super.onStart();
         super.onResume();
         Toolbar toolbar = (Toolbar)findViewById(R.id.genericToolbar);
         setSupportActionBar(toolbar);

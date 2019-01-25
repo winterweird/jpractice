@@ -106,6 +106,7 @@ public class DragLayout extends RelativeLayout {
     
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         layout = findViewById(R.id.linearLayout);
         deleteButton = findViewById(R.id.buttonDelete);
         deleteButton.post(new Runnable() {

@@ -52,7 +52,7 @@
     <string name="createListCancel">Cancel</string>
 
     <string name="createEntryTitle">Add word to list</string>
-    <string name="createEntryMessage">There shouldn't be a message for this dialog</string>
+    <string name="createEntryMessage">There shouldn\'t be a message for this dialog</string>
     <string name="createEntryOK">Add entry</string>
     <string name="createEntryCancel">Cancel</string>
     <string name="createEntryKanjiNameHint">Word (containing kanji)</string>

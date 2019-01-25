@@ -99,6 +99,7 @@ public class SwipeToRevealButtonItemLayout extends RelativeLayout {
     
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         layout = findViewById(R.id.linearLayout);
         layout.post(new Runnable() {
             @Override

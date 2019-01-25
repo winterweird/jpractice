@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice;
 
+import android.annotation.SuppressLint;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -203,8 +204,10 @@ public class NamedListsActivity extends ToolbarBackButtonActivity {
      *
      * Inserts the added item, if there was an added item.
      */
+    @SuppressLint("ValidFragment")
     public static class CreateNewListAndRefreshDialog extends CreateNewListDialog {
         private NamedListsAdapter adapter;
+        @SuppressLint("ValidFragment")
         public CreateNewListAndRefreshDialog(NamedListsAdapter adapter) {
             this.adapter = adapter;
         }

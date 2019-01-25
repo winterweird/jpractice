@@ -1,5 +1,6 @@
 package com.github.winterweird.jpractice;
 
+import android.annotation.SuppressLint;
 import android.text.TextWatcher;
 import android.text.Editable;
 import android.view.inputmethod.InputMethodManager;
@@ -195,9 +196,12 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
         }
     }
 
+    @SuppressLint("ValidFragment")
     public static class CreateDatabaseEntryAndRefreshDialog extends CreateDatabaseEntryDialog {
         private ViewListAdapter adapter;
         private String listname;
+        
+        @SuppressLint("ValidFragment")
         public CreateDatabaseEntryAndRefreshDialog(ViewListAdapter adapter, String listname) {
             this.adapter = adapter;
             this.listname = listname;
@@ -279,7 +283,7 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
                 Toast.makeText(ViewListActivity.this, "List deleted", Toast.LENGTH_LONG).show();
                 if (listName.equals(prefList)) {
                     edit.remove(getString(R.string.preferencesLastUsedList));
-                    edit.commit();
+                    edit.apply();
                 }
             }
         });

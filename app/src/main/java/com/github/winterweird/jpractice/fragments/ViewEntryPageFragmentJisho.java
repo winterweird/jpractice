@@ -9,14 +9,17 @@ import java.net.URLEncoder;
 import android.webkit.WebView;
 import java.io.UnsupportedEncodingException;
 import android.widget.Toast;
+import android.annotation.SuppressLint;
 
 import com.github.winterweird.jpractice.R;
 import android.os.Handler;
 
+@SuppressLint("ValidFragment")
 public class ViewEntryPageFragmentJisho extends Fragment {
     String kanji;
     Handler handler = new Handler();
 
+    @SuppressLint("ValidFragment")
     public ViewEntryPageFragmentJisho(String kanji) {
         this.kanji = kanji;
     }

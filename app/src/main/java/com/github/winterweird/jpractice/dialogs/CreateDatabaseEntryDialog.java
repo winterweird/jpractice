@@ -150,7 +150,7 @@ public class CreateDatabaseEntryDialog extends DialogFragment {
                                         Toast.LENGTH_LONG).show();
                                 edit.putString(act.getString(R.string.preferencesLastUsedList),
                                         listName);
-                                edit.commit();
+                                edit.apply();
                                 result = res;
                             } catch (SQLException ex) {
                                 Toast.makeText(act, "Error: " + ex.getMessage(),

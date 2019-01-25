@@ -3,8 +3,10 @@ package com.github.winterweird.jpractice.util;
 import android.os.Looper;
 import android.content.Context;
 import android.widget.Toast;
+import android.annotation.SuppressLint;
 
 public class ToastUtil {
+    @SuppressLint("ShowToast")
     static Toast toast = null;
     public static void show(Context context, String text) {
         try {
@@ -12,6 +14,7 @@ public class ToastUtil {
                 toast.setText(text);
             }
             else {
+                // shown after else stmt regardless
                 toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
             }
             toast.show();

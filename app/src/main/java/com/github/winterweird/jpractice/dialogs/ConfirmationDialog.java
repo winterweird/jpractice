@@ -5,9 +5,11 @@ import android.support.v4.app.DialogFragment;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 
 import com.github.winterweird.jpractice.R;
 
+@SuppressLint("ValidFragment")
 public class ConfirmationDialog extends DialogFragment {
     String title;
     String msg;
@@ -15,6 +17,7 @@ public class ConfirmationDialog extends DialogFragment {
     String cancelText;
     DialogInterface.OnClickListener positiveClickListener;
 
+    @SuppressLint("ValidFragment")
     public ConfirmationDialog(String title, String msg, String confirmText, String cancelText,
             DialogInterface.OnClickListener positiveClickListener) {
         this.title = title;

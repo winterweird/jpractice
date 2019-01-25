@@ -21,9 +21,9 @@ buildscript {
 }
 
 ext {
-    compileSdkVersion = 26
-    minSdkVersion = 19
-    targetSdkVersion = 26
+    compileSdkVersion = 28
+    minSdkVersion = 24
+    targetSdkVersion = 28
     supportLibVersion = "27.0.2"
     applicationId = "com.github.winterweird.jpractice"
 }

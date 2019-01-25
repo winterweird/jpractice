@@ -55,7 +55,7 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
     private int MAX_PAGE_WIDTH;
     private int DESIRED_PAGE_WIDTH; // TODO: make this not caps
     private WebView webview;
-    private SharedPreferences.Editor edit;
+    private SharedPreferences prefs;
     private List<String> searchTerms;
 
     /**
@@ -69,9 +69,9 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
 
         setContentView(R.layout.find_words);
 
-        SharedPreferences prefs = this.getSharedPreferences(getString(R.string.preferencesFile),
+        prefs = this.getSharedPreferences(getString(R.string.preferencesFile),
                 Context.MODE_PRIVATE);
-        edit = prefs.edit();
+        
         Resources res = getResources();
 
         searchTerms = loadSearchTerms();
@@ -254,8 +254,9 @@ public class FindWordsActivity extends ToolbarBackButtonActivity
      */
     @Override
     public void onDialogDismiss(DialogFragment dialog) {
+        SharedPreferences.Editor edit = prefs.edit();
         edit.putInt(getString(R.string.preferencesViewportWidth), DESIRED_PAGE_WIDTH);
-        edit.commit();
+        edit.apply();
     }
 
     /**
