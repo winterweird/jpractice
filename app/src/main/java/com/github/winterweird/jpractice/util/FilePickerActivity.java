@@ -74,8 +74,8 @@ public class FilePickerActivity extends Activity {
             if (resultCode == Activity.RESULT_OK) {
                 FilePicker.Callback callback = FilePicker.getMostRecentCallback();
                 callback.callback(data.getData());
-                finish();
             }
+            finish(); // finish anyway
         }
     }
 }
