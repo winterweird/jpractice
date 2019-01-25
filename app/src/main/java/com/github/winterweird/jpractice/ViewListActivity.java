@@ -61,6 +61,7 @@ import com.github.winterweird.jpractice.dialogs.CreateDatabaseEntryDialog;
 import com.github.winterweird.jpractice.adapters.ViewListAdapter;
 import com.github.winterweird.jpractice.adapters.ViewListItemTouchHelperCallback;
 import com.github.winterweird.jpractice.japanese.JapaneseTextProcessingUtilities;
+import com.github.winterweird.jpractice.util.SoftKeyboard;
 
 public class ViewListActivity extends ToolbarBackButtonActivity {
     private RecyclerView recyclerView;
@@ -291,7 +292,7 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
     private void setShowFilterSearchBox(boolean visible) {
         searchOpened = visible;
         ActionBar action = getSupportActionBar();
-        Log.d("Test", "visibility is " + visible);
+        Log.d("Test", "searchbox visibility is " + visible);
         action.setDisplayShowCustomEnabled(visible);
         action.setDisplayShowTitleEnabled(!visible);
         
@@ -301,7 +302,8 @@ public class ViewListActivity extends ToolbarBackButtonActivity {
             if (searchBox != null) {
                 searchBox.setText("");
                 searchBox.clearFocus();
-                imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+                SoftKeyboard.hide(this);
+                //imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
             }
 
             action.setCustomView(null);
